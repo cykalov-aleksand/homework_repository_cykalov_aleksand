@@ -22,8 +22,7 @@ shadowJar {
     archiveFileName.set("hw01-shadow-${version}.jar")
     manifest {
         attributes 'Main-Class': 'org.example.Main'
-        //  attributes 'configuration-cache': 'true'
-    }
+       }
 }
 dependencies {
     implementation 'com.google.guava:guava:33.6.0-jre'
