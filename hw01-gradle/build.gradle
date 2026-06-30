@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '9.4.2'
+}
+
+group = 'org.example'
+version = 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+jar {
+    manifest {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        attributes 'Main-Class': 'org.example.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+shadowJar {
+    archiveFileName.set("hw01-shadow-${version}.jar")
+    manifest {
+        attributes 'Main-Class': 'org.example.Main'
+       }
+}
+dependencies {
+    implementation 'com.google.guava:guava:33.6.0-jre'
+    implementation('ch.qos.logback:logback-core:1.5.35')
+    implementation('ch.qos.logback:logback-classic:1.5.35')
+    implementation('org.slf4j:slf4j-api:2.0.18')
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
