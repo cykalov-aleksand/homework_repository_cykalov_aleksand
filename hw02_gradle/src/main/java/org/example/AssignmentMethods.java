@@ -14,7 +14,7 @@ public class AssignmentMethods {
         if ((elementOne < 0) || (elementTwo < 0)) {
             throw new ArrayIndexOutOfBoundsException("Ошибка элемент массива не может быть отрицательным");
         }
-        if ((arrays.length<2)||(elementOne >= arrays.length) || (elementTwo >= arrays.length)) {
+        if ((elementOne >= arrays.length) || (elementTwo >= arrays.length)) {
             throw new IllegalAccessException("Ошибка, элемент в массиве отсутствует");
         }
         if ((elementOne == elementTwo)) {
