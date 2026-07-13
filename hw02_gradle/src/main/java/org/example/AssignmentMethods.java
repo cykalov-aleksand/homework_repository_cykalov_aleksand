@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AssignmentMethods {
@@ -15,7 +14,7 @@ public class AssignmentMethods {
         if ((elementOne < 0) || (elementTwo < 0)) {
             throw new ArrayIndexOutOfBoundsException("Ошибка элемент массива не может быть отрицательным");
         }
-        if ((elementOne >= arrays.length) || (elementTwo >= arrays.length)) {
+        if ((arrays.length<2)||(elementOne >= arrays.length) || (elementTwo >= arrays.length)) {
             throw new IllegalAccessException("Ошибка, элемент в массиве отсутствует");
         }
         if ((elementOne == elementTwo)) {
@@ -34,10 +33,12 @@ public class AssignmentMethods {
     }
 
     public Map<String, Integer> listUniqueWordsSorted(String[] arrayWords) {
+        // проходим по принятому массиву удаляем возможные пробелы и преобразуем слова в нижний регистр с целью дальнейшего поиска однотипных
         Stream<String> stringStream = Arrays.stream(arrayWords).map(o -> o.trim().toLowerCase());
         logger.debug("количество слов в предложении - {}", arrayWords.length);
         Map<String, Integer> words = new TreeMap<>();
         stringStream.forEach(o -> words.put(o, words.getOrDefault(o, 0) + 1));
+        logger.debug("Количество уникальных слов в массиве - {}",words.size());
         return words;
     }
 }

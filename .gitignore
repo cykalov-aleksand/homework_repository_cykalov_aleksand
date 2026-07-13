@@ -11,3 +11,4 @@ out
 *.iml
 
 /.idea/
+/hw02_gradle/logis/
