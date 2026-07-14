@@ -15,3 +15,5 @@ rootProject.name = 'homework_repository_cykalov_aleksand'
 include('app')
 include 'hw01-gradle'
 
+
+include 'hw02_gradle'
