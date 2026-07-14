@@ -9,16 +9,12 @@ import java.util.stream.Stream;
 public class AssignmentMethods {
     static Logger logger = LoggerFactory.getLogger(AssignmentMethods.class);
 
-    public <T> T[] replacingArrayElement(T[] arrays, int elementOne, int elementTwo) throws IllegalAccessException,
-            ArrayIndexOutOfBoundsException {
+    public <T> T[] replacingArrayElement(T[] arrays, int elementOne, int elementTwo) throws ArrayIndexOutOfBoundsException {
         if ((elementOne < 0) || (elementTwo < 0)) {
             throw new ArrayIndexOutOfBoundsException("Ошибка элемент массива не может быть отрицательным");
         }
         if ((elementOne >= arrays.length) || (elementTwo >= arrays.length)) {
-            throw new IllegalAccessException("Ошибка, элемент в массиве отсутствует");
-        }
-        if ((elementOne == elementTwo)) {
-            throw new IllegalAccessException("Замена элемента не проведена, массив остался без изменений");
+            throw new ArrayIndexOutOfBoundsException("Ошибка, элемент в массиве отсутствует");
         }
         T transferElement = arrays[elementTwo];
         arrays[elementTwo] = arrays[elementOne];
@@ -38,7 +34,7 @@ public class AssignmentMethods {
         logger.debug("количество слов в предложении - {}", arrayWords.length);
         Map<String, Integer> words = new TreeMap<>();
         stringStream.forEach(o -> words.put(o, words.getOrDefault(o, 0) + 1));
-        logger.debug("Количество уникальных слов в массиве - {}",words.size());
+        logger.debug("Количество уникальных слов в массиве - {}", words.size());
         return words;
     }
 }

@@ -19,48 +19,26 @@ public class AssignmentMethodsTest {
         Integer[] objectsTest = {30, 20, 10};
         Object[] result;
         logger.info("Тест на проверку перестановки местами элементов массива.");
-        try {
-            result = assignmentMethods.replacingArrayElement(objects, 0, 2);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        result = assignmentMethods.replacingArrayElement(objects, 0, 2);
         assertArrayEquals(result, objectsTest);
-    }
-
-    @Test
-    public void replacingArrayElementIllegalAccessException() {
-        logger.info("Тест на проверку выбрасывания исключения при вводе одинаковых элементов.");
-        Integer[] objects = {10, 20, 30};
-        try {
-            assignmentMethods.replacingArrayElement(objects, 0, 0);
-        } catch (IllegalAccessException e) {
-            assertEquals("Замена элемента не проведена, массив остался без изменений", e.getMessage());
-            assertNull(e.getCause());
-        }
     }
 
     @Test
     public void replacingArrayElementIllegalAccessExceptionTwo() {
         logger.info("Тест на проверку выбрасывания исключения при вводе элемента выше длины массива.");
         Integer[] objects = {10, 20, 30};
-        try {
-            assignmentMethods.replacingArrayElement(objects, 0, 4);
-        } catch (IllegalAccessException e) {
-            assertEquals("Ошибка, элемент в массиве отсутствует", e.getMessage());
-            assertNull(e.getCause());
-        }
+        Throwable exception = assertThrows(ArrayIndexOutOfBoundsException.class, () ->
+                assignmentMethods.replacingArrayElement(objects, 0, 4));
+        assertEquals("Ошибка, элемент в массиве отсутствует", exception.getMessage());
     }
 
     @Test
     public void replacingArrayElementArrayIndexOutOfBoundsException() {
         logger.info("Тест на проверку выбрасывания исключения при вводе отрицательного элемента.");
         Integer[] objects = {10, 20, 30};
-        try {
-            assignmentMethods.replacingArrayElement(objects, -2, 1);
-        } catch (ArrayIndexOutOfBoundsException | IllegalAccessException e) {
-            assertEquals("Ошибка элемент массива не может быть отрицательным", e.getMessage());
-            assertNull(e.getCause());
-        }
+        Throwable exception = assertThrows(ArrayIndexOutOfBoundsException.class, () ->
+                assignmentMethods.replacingArrayElement(objects, -1, 2));
+        assertEquals("Ошибка элемент массива не может быть отрицательным", exception.getMessage());
     }
 
     @Test
