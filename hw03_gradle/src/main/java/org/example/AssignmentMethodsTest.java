@@ -1,6 +1,9 @@
 package org.example;
 
 
+import org.example.anatations.After;
+import org.example.anatations.Before;
+import org.example.anatations.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,15 +15,17 @@ import java.util.Objects;
 
 public class AssignmentMethodsTest {
     static Logger logger = LoggerFactory.getLogger(AssignmentMethodsTest.class);
-    AssignmentMethods assignmentMethods = new AssignmentMethods();
+    AssignmentMethods assignmentMethods;
 
     @Before
     public void methodBefore() {
+        assignmentMethods=new AssignmentMethods();
         logger.info("Загрузка метода перед тестом");
     }
 
     @After
     public void methodAfter() {
+        assignmentMethods=null;
         logger.info("Загрузка метода по окончанию теста\n");
     }
 
