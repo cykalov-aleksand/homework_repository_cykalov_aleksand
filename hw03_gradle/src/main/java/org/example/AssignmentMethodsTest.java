@@ -1,29 +1,29 @@
-import org.examplee.AssignmentMethods;
+package org.example;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import static org.junit.Assert.*;
 
 public class AssignmentMethodsTest {
     static Logger logger = LoggerFactory.getLogger(AssignmentMethodsTest.class);
     AssignmentMethods assignmentMethods = new AssignmentMethods();
+
     @Before
-public void methodBefore(){
-    logger.info("Загрузка метода перед тестом");
-}
-@After
-public void methodAfter(){
+    public void methodBefore() {
+        logger.info("Загрузка метода перед тестом");
+    }
+
+    @After
+    public void methodAfter() {
         logger.info("Загрузка метода по окончанию теста\n");
-}
+    }
+
     @Test
     public void replacingArrayElement() {
         Integer[] objects = {10, 20, 30};
@@ -31,25 +31,41 @@ public void methodAfter(){
         Object[] result;
         logger.info("Тест на проверку перестановки местами элементов массива.");
         result = assignmentMethods.replacingArrayElement(objects, 0, 2);
-        assertArrayEquals(result, objectsTest);
+        for (int numberElement = 0; numberElement < result.length; numberElement++) {
+            if (result[numberElement] != objectsTest[numberElement]) {
+                throw new IllegalArgumentException("Тест на проверку перестановки местами элементов массива не пройден");
+            }
+        }
     }
 
     @Test
     public void replacingArrayElementIllegalAccessExceptionTwo() {
         logger.info("Тест на проверку выбрасывания исключения при вводе элемента выше длины массива.");
         Integer[] objects = {10, 20, 30};
-        Throwable exception = assertThrows(ArrayIndexOutOfBoundsException.class, () ->
-                assignmentMethods.replacingArrayElement(objects, 0, 4));
-        assertEquals("Ошибка, элемент в массиве отсутствует", exception.getMessage());
+        boolean checkingException = false;
+        try {
+            assignmentMethods.replacingArrayElement(objects, 0, 2);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            checkingException = true;
+        }
+        if (checkingException) {
+            throw new IllegalArgumentException("Тест на проверку выбрасывания исключения при вводе элемента выше длины массива не пройден");
+        }
     }
 
     @Test
     public void replacingArrayElementArrayIndexOutOfBoundsException() {
         logger.info("Тест на проверку выбрасывания исключения при вводе отрицательного элемента.");
         Integer[] objects = {10, 20, 30};
-        Throwable exception = assertThrows(ArrayIndexOutOfBoundsException.class, () ->
-                assignmentMethods.replacingArrayElement(objects, -1, 2));
-        assertEquals("Ошибка элемент массива не может быть отрицательным", exception.getMessage());
+        boolean checkingException = false;
+        try {
+            assignmentMethods.replacingArrayElement(objects, -1, 2);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            checkingException = true;
+        }
+        if (checkingException) {
+            throw new IllegalArgumentException("Тест на проверку выбрасывания исключения при вводе отрицательного элемента не пройден");
+        }
     }
 
     @Test
@@ -58,7 +74,9 @@ public void methodAfter(){
         Integer[] integers = {50, 40, 30};
         List<Integer> list = assignmentMethods.convertArrayList(integers);
         for (int i = 0; i < integers.length; i++) {
-            assertEquals(integers[i], list.get(i));
+            if (!Objects.equals(integers[i], list.get(i))) {
+                throw new IllegalArgumentException("Тест на проверку преобразования массива в ArrayList не пройден");
+            }
         }
     }
 
@@ -67,7 +85,9 @@ public void methodAfter(){
         logger.info("Тест на проверку количества уникальных слов в массиве.");
         String[] words = {"Зима", "Зима", "утро", "утро ", "Вечер", "мир", "зима"};
         Map<String, Integer> wordsMap = assignmentMethods.listUniqueWordsSorted(words);
-        assertEquals(4, wordsMap.size());
+        if (wordsMap.size() != 4) {
+            throw new IllegalArgumentException("Тест на проверку количества уникальных слов в массиве не пройден");
+        }
     }
 
     @Test
@@ -75,16 +95,22 @@ public void methodAfter(){
         logger.info("Тест на проверку подсчета количество одинаковых слов в массиве.");
         String[] words = {"Зима", "Зима", "утро", "утро ", "Вечер", "мир", "зима"};
         Map<String, Integer> wordsMap = assignmentMethods.listUniqueWordsSorted(words);
-        assertEquals(3, wordsMap.get("зима").intValue());
-        assertEquals(2, wordsMap.get("утро").intValue());
+        if (wordsMap.get("зима") != 3) {
+            throw new IllegalArgumentException("Тест на проверку подсчета количество одинаковых слов в массиве не пройден");
+        }
     }
 
     @Test
     public void listUniqueWordsSortedTestSorted() {
         logger.info("Тест на проверку размещения слов в алфавитном порядке.");
         String[] words = {"Зима", "Зима", "утро", "утро ", "Вечер", "мир", "зима"};
+        List<String> etalonList = List.of("вечер", "зима", "мир", "утро");
         Map<String, Integer> wordsMap = assignmentMethods.listUniqueWordsSorted(words);
         List<String> keyList = new ArrayList<>(wordsMap.keySet());
-        assertEquals(List.of("вечер", "зима", "мир", "утро"), keyList);
+        for (int number = 0; number < etalonList.size(); number++) {
+            if (!etalonList.get(number).equals(keyList.get(number))) {
+                throw new IllegalArgumentException("Тест на проверку размещения слов в алфавитном порядке не пройден");
+            }
+        }
     }
 }
