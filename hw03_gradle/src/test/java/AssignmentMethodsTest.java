@@ -1,8 +1,8 @@
-import org.examplee.AssignmentMethods;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.example.AssignmentMethods;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,16 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class AssignmentMethodsTest {
     static Logger logger = LoggerFactory.getLogger(AssignmentMethodsTest.class);
     AssignmentMethods assignmentMethods = new AssignmentMethods();
-    @Before
+    @BeforeEach
 public void methodBefore(){
     logger.info("Загрузка метода перед тестом");
 }
-@After
+@AfterEach
 public void methodAfter(){
         logger.info("Загрузка метода по окончанию теста\n");
 }

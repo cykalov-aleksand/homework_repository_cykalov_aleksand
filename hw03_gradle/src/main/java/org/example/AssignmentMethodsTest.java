@@ -37,36 +37,39 @@ public class AssignmentMethodsTest {
             }
         }
     }
-
-    @Test
+      @Test
     public void replacingArrayElementIllegalAccessExceptionTwo() {
         logger.info("Тест на проверку выбрасывания исключения при вводе элемента выше длины массива.");
         Integer[] objects = {10, 20, 30};
-        boolean checkingException = false;
+        boolean checkingException=false;
         try {
-            assignmentMethods.replacingArrayElement(objects, 0, 2);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            checkingException = true;
+            assignmentMethods.replacingArrayElement(objects, 0, 3);
+        }catch (ArrayIndexOutOfBoundsException e){
+            if("Ошибка, элемент в массиве отсутствует".equals(e.getMessage())) {
+                checkingException = true;
+            }
         }
-        if (checkingException) {
+        if(!checkingException){
             throw new IllegalArgumentException("Тест на проверку выбрасывания исключения при вводе элемента выше длины массива не пройден");
         }
-    }
+       }
 
     @Test
     public void replacingArrayElementArrayIndexOutOfBoundsException() {
         logger.info("Тест на проверку выбрасывания исключения при вводе отрицательного элемента.");
         Integer[] objects = {10, 20, 30};
-        boolean checkingException = false;
+        boolean checkingException=false;
         try {
             assignmentMethods.replacingArrayElement(objects, -1, 2);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            checkingException = true;
+        }catch (ArrayIndexOutOfBoundsException e){
+            if ("Ошибка элемент массива не может быть отрицательным".equals(e.getMessage())){
+            checkingException=true;
+            }
         }
-        if (checkingException) {
+        if(!checkingException){
             throw new IllegalArgumentException("Тест на проверку выбрасывания исключения при вводе отрицательного элемента не пройден");
         }
-    }
+        }
 
     @Test
     public void convertArrayListIntegerTest() {
