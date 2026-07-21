@@ -16,13 +16,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AssignmentMethodsTest {
     static Logger logger = LoggerFactory.getLogger(AssignmentMethodsTest.class);
-    AssignmentMethods assignmentMethods = new AssignmentMethods();
+    AssignmentMethods assignmentMethods;
     @BeforeEach
 public void methodBefore(){
-    logger.info("Загрузка метода перед тестом");
+    assignmentMethods=new AssignmentMethods();
+        logger.info("Загрузка метода перед тестом");
 }
 @AfterEach
 public void methodAfter(){
+        assignmentMethods=null;
         logger.info("Загрузка метода по окончанию теста\n");
 }
     @Test
