@@ -1,10 +1,8 @@
-package test_jmh;
+package jmh.overall_performance;
 
 import org.example.Main;
+import org.example.module_hw02.MainModified;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -15,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Thread)
 @BenchmarkMode(Mode.SingleShotTime)          // среднее время на один вызов
-@OutputTimeUnit(TimeUnit.MILLISECONDS)  // лучше в наносекундах для мелких операций
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class ReflectionBenchmark {
 
     private Method mainMethod;
@@ -31,26 +29,22 @@ public class ReflectionBenchmark {
         mainMethod = clazz.getMethod("main", String[].class);
 
         // Один аргумент: String[]
-        args = new Object[]{ new String[]{} };
+        args = new Object[]{new String[]{}};
     }
 
     @Benchmark
     public void directCall() {
-       Main.main(new String[]{});
+        Main.main(new String[]{});
     }
 
-     @Benchmark
+    @Benchmark
+    public void directCallModified() {
+        MainModified.main(new String[]{});
+    }
+
+    @Benchmark
     public void reflectionCall() throws InvocationTargetException, IllegalAccessException {
         mainMethod.invoke(null, args);
     }
 
-    // Точка входа для запуска JMH (можно вынести в отдельный класс)
-    public static void main(String[] args) throws RunnerException {
-        var opt = new OptionsBuilder()
-                .forks(1)                 // 3 отдельных процесса
-                // .warmupIterations(2)     // 5 прогревочных итераций в каждом форке
-                .measurementIterations(20) // 20 измерительных итераций
-                .build();
-        new Runner(opt).run();
-    }
 }
