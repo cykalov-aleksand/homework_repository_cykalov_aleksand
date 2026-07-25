@@ -2,6 +2,7 @@ package org.example.time;
 
 
 import org.example.Main;
+import org.example.module_hw02.MainModified;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,6 +20,8 @@ public class TestTime {
 
     public static void main(String[] args) {
         double averageDirect = executionTimeAnalysis();
+        double averageDirectModifiedApplication=analyzingExecutionTimeModifiedApplication();
+
         ResultReflection resultReflection = analysisExecutionTimeDuringReflection();
 
         if (averageDirect >= 0) {
@@ -26,7 +29,11 @@ public class TestTime {
         } else {
             logger.warn("Замер прямого вызова не удался");
         }
-
+        if (averageDirectModifiedApplication >= 0) {
+            logger.info("Среднее время при прямом вызове MainModified (модифицированное приложение): {} мс", averageDirectModifiedApplication);
+        } else {
+            logger.warn("Замер прямого вызова не удался");
+        }
         if (resultReflection != null) {
             logger.info("Среднее время вызова через рефлексию (только invoke): {} мс", resultReflection.getAverageTimeMs());
             logger.info("Разовые накладные расходы (загрузка JAR + поиск класса + поиск метода): {} мс", resultReflection.getSetupTimeMs());
@@ -44,9 +51,29 @@ public class TestTime {
         logger.info("{} МБ — занятая память", usedMemory);
         logger.info("{} МБ — свободная память в куче", freeMemory);
     }
+private static double analyzingExecutionTimeModifiedApplication(){
+    logger.info("\nСравнение: прямой вызов модифицированного приложения (20 итераций, без прогрева)");
+    String[] otherArgs = {};
+    List<Double> listTime = new ArrayList<>();
 
+    for (int i = 0; i < 20; i++) {
+        long startProject = System.nanoTime();
+        MainModified.main(otherArgs);
+        double elapsedMs = (System.nanoTime() - startProject) / 1_000_000.0;
+        listTime.add(elapsedMs);
+    }
+
+    Runtime runtime = Runtime.getRuntime();
+    long maxMemory = runtime.maxMemory() / 1048576;
+    long totalMemory = runtime.totalMemory() / 1048576;
+    long freeMemory = runtime.freeMemory() / 1048576;
+
+    informationLogger(listTime, maxMemory, totalMemory, freeMemory);
+
+    return averageAccessTimeTenSamples(listTime);
+}
     private static double executionTimeAnalysis() {
-        logger.info("Сравнение: прямой вызов приложения (20 итераций, без прогрева)");
+        logger.info("\nСравнение: прямой вызов приложения (20 итераций, без прогрева)");
         String[] otherArgs = {};
         List<Double> listTime = new ArrayList<>();
 
@@ -68,7 +95,7 @@ public class TestTime {
     }
 
     private static ResultReflection analysisExecutionTimeDuringReflection() {
-        logger.info("Сравнение: прямой вызов vs рефлексия (20 итераций, без прогрева)");
+        logger.info("\nСравнение: прямой вызов vs рефлексия (20 итераций, без прогрева)");
         File jarFile = new File("hw02_gradle.jar");
 
         try {
