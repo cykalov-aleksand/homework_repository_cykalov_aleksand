@@ -1,0 +1,88 @@
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов приложения (20 итераций, без прогрева)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 5.082235 мс — среднее время (20 выборок)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 256 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 13 МБ — занятая память
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 243 МБ — свободная память в куче
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов модифицированного приложения (20 итераций, без прогрева)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 3.2879199999999997 мс — среднее время (20 выборок)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 256 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 15 МБ — занятая память
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 241 МБ — свободная память в куче
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов vs рефлексия (20 итераций, без прогрева)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 2.84044 мс — среднее время (20 выборок)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 256 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 17 МБ — занятая память
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - 239 МБ — свободная память в куче
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове Main: 5.082235 мс
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове MainModified (модифицированное приложение): 3.2879199999999997 мс
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - Среднее время вызова через рефлексию (только invoke): 2.84044 мс
+2026-07-25 19:31:38 [main] INFO  org.example.time.TestTime - Разовые накладные расходы (загрузка JAR + поиск класса + поиск метода): 0.6378 мс
+2026-07-25 19:32:10 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов приложения (20 итераций, без прогрева)
+2026-07-25 19:32:10 [main] INFO  org.example.time.TestTime - 4.638115 мс — среднее время (20 выборок)
+2026-07-25 19:32:10 [main] INFO  org.example.time.TestTime - 512 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:32:10 [main] INFO  org.example.time.TestTime - 14 МБ — занятая память
+2026-07-25 19:32:10 [main] INFO  org.example.time.TestTime - 498 МБ — свободная память в куче
+2026-07-25 19:32:10 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов модифицированного приложения (20 итераций, без прогрева)
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 3.68574 мс — среднее время (20 выборок)
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 512 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 16 МБ — занятая память
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 496 МБ — свободная память в куче
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов vs рефлексия (20 итераций, без прогрева)
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 2.496875 мс — среднее время (20 выборок)
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 512 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 17 МБ — занятая память
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - 495 МБ — свободная память в куче
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове Main: 4.638115 мс
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове MainModified (модифицированное приложение): 3.68574 мс
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - Среднее время вызова через рефлексию (только invoke): 2.496875 мс
+2026-07-25 19:32:11 [main] INFO  org.example.time.TestTime - Разовые накладные расходы (загрузка JAR + поиск класса + поиск метода): 0.6814 мс
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов приложения (20 итераций, без прогрева)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 4.7341999999999995 мс — среднее время (20 выборок)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 1024 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 14 МБ — занятая память
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 1010 МБ — свободная память в куче
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов модифицированного приложения (20 итераций, без прогрева)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 2.49399 мс — среднее время (20 выборок)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 1024 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 16 МБ — занятая память
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 1008 МБ — свободная память в куче
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов vs рефлексия (20 итераций, без прогрева)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 2.4428650000000003 мс — среднее время (20 выборок)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 1024 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 17 МБ — занятая память
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - 1007 МБ — свободная память в куче
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове Main: 4.7341999999999995 мс
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове MainModified (модифицированное приложение): 2.49399 мс
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - Среднее время вызова через рефлексию (только invoke): 2.4428650000000003 мс
+2026-07-25 19:32:33 [main] INFO  org.example.time.TestTime - Разовые накладные расходы (загрузка JAR + поиск класса + поиск метода): 0.9252 мс
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов приложения (20 итераций, без прогрева)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 4.77071 мс — среднее время (20 выборок)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 2048 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 14 МБ — занятая память
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 2034 МБ — свободная память в куче
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов модифицированного приложения (20 итераций, без прогрева)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 3.126715 мс — среднее время (20 выборок)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 2048 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 16 МБ — занятая память
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 2032 МБ — свободная память в куче
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 
+Сравнение: прямой вызов vs рефлексия (20 итераций, без прогрева)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 3.33307 мс — среднее время (20 выборок)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 2048 МБ — максимальный размер кучи (-Xmx)
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 17 МБ — занятая память
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - 2031 МБ — свободная память в куче
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове Main: 4.77071 мс
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - Среднее время при прямом вызове MainModified (модифицированное приложение): 3.126715 мс
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - Среднее время вызова через рефлексию (только invoke): 3.33307 мс
+2026-07-25 19:33:00 [main] INFO  org.example.time.TestTime - Разовые накладные расходы (загрузка JAR + поиск класса + поиск метода): 0.5091 мс

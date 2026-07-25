@@ -1,6 +1,6 @@
 package jmh.test_array_simulator;
 
-import org.example.module_hw02.ArraySimulator;
+import org.example.module_hw02_modified.ArraySimulator;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;

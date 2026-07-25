@@ -1,7 +1,7 @@
 package jmh.overall_performance;
 
 import org.example.Main;
-import org.example.module_hw02.MainModified;
+import org.example.module_hw02_modified.MainModified;
 import org.openjdk.jmh.annotations.*;
 
 import java.io.File;

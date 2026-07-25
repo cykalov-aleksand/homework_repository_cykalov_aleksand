@@ -1,7 +1,7 @@
 package jmh.test_assigment_methods;
 
 import org.example.AssignmentMethods;
-import org.example.module_hw02.ArraySimulator;
+import org.example.module_hw02_modified.ArraySimulator;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.List;

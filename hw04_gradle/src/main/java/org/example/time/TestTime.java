@@ -2,7 +2,7 @@ package org.example.time;
 
 
 import org.example.Main;
-import org.example.module_hw02.MainModified;
+import org.example.module_hw02_modified.MainModified;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package org.example.module_hw02;
+package org.example.module_hw02_modified;
 
 import org.example.ArraySimulator;
 import org.example.AssignmentMethods;
