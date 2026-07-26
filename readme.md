@@ -98,3 +98,16 @@ hw04_gradle\src\main\java\org\example\module_hw02_modified
 данные представлены в том же пакете расположенном по адресу:
    hw04_gradle\build\libs\hw04_gradle\logis\application_log.log
 
+Примечание: 
+1. Если в приложении требуется вывести в консоль логи информации исследуемого модуля то в файле logback.properties произвести замену строки
+
+logger.info.module=OFF на строку
+logger.info.module=DEBUG
+2. В модуле файл hw02_gradle.jar используется для демонстрации вызова метода main() через рефлексию.
+3. В пакете module_hw02_modified расположен модифицированный модуль hw02_gradle.
+4. Тесты jmh расположены в соответствующей папке.
+5. Если мы запускаем метод main из IDEA логи приложения сохраняются в hw04_gradle.logis.application_log.log.
+6. Если мы вызываем hw04_gradle.jar  соответственно с указанием выделеной памяти, то результаты записываются в файл 
+hw04_gradle.logis.application_log.log расположенный в пакете build.libs
+
+

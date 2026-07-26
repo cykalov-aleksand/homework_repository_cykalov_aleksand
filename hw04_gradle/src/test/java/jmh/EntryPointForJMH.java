@@ -7,6 +7,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 public class EntryPointForJMH {
     public static void main(String[] args) throws RunnerException {
         var opt = new OptionsBuilder()
+                .jvmArgs("-Xms1g", "-Xmx1g", "-XX:+UseG1GC")
                 .forks(1)
                 .warmupIterations(2)
                 .measurementIterations(2)
