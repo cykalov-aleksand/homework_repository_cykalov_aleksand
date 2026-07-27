@@ -109,5 +109,5 @@ logger.info.module=DEBUG
 5. Если мы запускаем метод main из IDEA логи приложения сохраняются в hw04_gradle.logis.application_log.log.
 6. Если мы вызываем hw04_gradle.jar  соответственно с указанием выделеной памяти, то результаты записываются в файл 
 hw04_gradle.logis.application_log.log расположенный в пакете build.libs
-
+### Результат: проект выполнен, имя модуля: hw04_gradle.
 
