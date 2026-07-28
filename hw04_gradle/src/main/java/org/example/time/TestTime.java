@@ -14,120 +14,113 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class TestTime {
     private static final Logger logger = LoggerFactory.getLogger(TestTime.class);
 
     public static void main(String[] args) {
-        double averageDirect = executionTimeAnalysis();
-        double averageDirectModifiedApplication=analyzingExecutionTimeModifiedApplication();
+        double averageDirect = analyzingExecutionTimeClean(new String[]{}, Main::main);
+        double averageDirectModifiedApplication = analyzingExecutionTimeClean(new String[]{}, MainModified::main);
 
         ResultReflection resultReflection = analysisExecutionTimeDuringReflection();
 
-        if (averageDirect >= 0) {
-            logger.info("Среднее время при прямом вызове Main: {} мс", averageDirect);
-        } else {
-            logger.warn("Замер прямого вызова не удался");
-        }
-        if (averageDirectModifiedApplication >= 0) {
-            logger.info("Среднее время при прямом вызове MainModified (модифицированное приложение): {} мс", averageDirectModifiedApplication);
-        } else {
-            logger.warn("Замер прямого вызова не удался");
-        }
-        if (resultReflection != null) {
-            logger.info("Среднее время вызова через рефлексию (только invoke): {} мс", resultReflection.getAverageTimeMs());
-            logger.info("Разовые накладные расходы (загрузка JAR + поиск класса + поиск метода): {} мс", resultReflection.getSetupTimeMs());
-        } else {
-            logger.warn("Замер через рефлексию не удался");
-        }
+        logResults(averageDirect, averageDirectModifiedApplication, resultReflection);
     }
 
-    private static void informationLogger(List<Double> listTime, long maxMemory, long totalMemory, long freeMemory) {
-        double avg = averageAccessTimeTenSamples(listTime);
-        long usedMemory = totalMemory - freeMemory;
-
-        logger.info("{} мс — среднее время (20 выборок)", avg);
-        logger.info("{} МБ — максимальный размер кучи (-Xmx)", maxMemory);
-        logger.info("{} МБ — занятая память", usedMemory);
-        logger.info("{} МБ — свободная память в куче", freeMemory);
-    }
-private static double analyzingExecutionTimeModifiedApplication(){
-    logger.info("\nСравнение: прямой вызов модифицированного приложения (20 итераций, без прогрева)");
-    String[] otherArgs = {};
-    List<Double> listTime = new ArrayList<>();
-
-    for (int i = 0; i < 20; i++) {
-        long startProject = System.nanoTime();
-        MainModified.main(otherArgs);
-        double elapsedMs = (System.nanoTime() - startProject) / 1_000_000.0;
-        listTime.add(elapsedMs);
-    }
-
-    Runtime runtime = Runtime.getRuntime();
-    long maxMemory = runtime.maxMemory() / 1048576;
-    long totalMemory = runtime.totalMemory() / 1048576;
-    long freeMemory = runtime.freeMemory() / 1048576;
-
-    informationLogger(listTime, maxMemory, totalMemory, freeMemory);
-
-    return averageAccessTimeTenSamples(listTime);
-}
-    private static double executionTimeAnalysis() {
-        logger.info("\nСравнение: прямой вызов приложения (20 итераций, без прогрева)");
-        String[] otherArgs = {};
-        List<Double> listTime = new ArrayList<>();
-
-        for (int i = 0; i < 20; i++) {
-            long startProject = System.nanoTime();
-            Main.main(otherArgs);
-            double elapsedMs = (System.nanoTime() - startProject) / 1_000_000.0;
-            listTime.add(elapsedMs);
-        }
-
+    private static void logResults(
+            double averageDirect,
+            double averageDirectModified,
+            ResultReflection resultReflection
+    ) {
         Runtime runtime = Runtime.getRuntime();
         long maxMemory = runtime.maxMemory() / 1048576;
         long totalMemory = runtime.totalMemory() / 1048576;
         long freeMemory = runtime.freeMemory() / 1048576;
+        long usedMemory = totalMemory - freeMemory;
 
-        informationLogger(listTime, maxMemory, totalMemory, freeMemory);
+        logger.info("\n=== ИТОГОВЫЕ РЕЗУЛЬТАТЫ ===");
+        if (averageDirect >= 0) {
+            logger.info("Среднее время при прямом вызове Main: {} мс", averageDirect);
+        } else {
+            logger.warn("Замер прямого вызова Main не удался");
+        }
+        if (averageDirectModified >= 0) {
+            logger.info("Среднее время при прямом вызове MainModified: {} мс", averageDirectModified);
+        } else {
+            logger.warn("Замер прямого вызова MainModified не удался");
+        }
+        if (resultReflection != null) {
+            logger.info("Среднее время вызова через рефлексию (только invoke): {} мс", resultReflection.getAverageTimeMs());
+            // Исправили формулировку: убрали «загрузка JAR», потому что отдельной операции нет
+            logger.info("Разовые накладные расходы (поиск класса + поиск метода): {} мс", resultReflection.getSetupTimeMs());
+        } else {
+            logger.warn("Замер через рефлексию не удался");
+        }
+
+        logger.info("{} МБ — максимальный размер кучи (-Xmx)", maxMemory);
+        logger.info("{} МБ — занятая память", usedMemory);
+        logger.info("{} МБ — свободная память в куче", freeMemory);
+    }
+
+    /**
+     * «Чистый» замер времени: замеряем каждую итерацию отдельно.
+     */
+    private static double analyzingExecutionTimeClean(String[] args, Consumer<String[]> consumer) {
+        int warmupIterations = 10;
+        int measurementIterations = 50; // Увеличили для лучшей статистики
+
+        // Прогрев (не идёт в статистику)
+        for (int i = 0; i < warmupIterations; i++) {
+            consumer.accept(args);
+        }
+
+        List<Double> listTime = new ArrayList<>(measurementIterations);
+        for (int i = 0; i < measurementIterations; i++) {
+            long start = System.nanoTime();
+            consumer.accept(args);
+            double elapsedMs = (System.nanoTime() - start) / 1_000_000.0;
+            listTime.add(elapsedMs);
+        }
 
         return averageAccessTimeTenSamples(listTime);
     }
 
     private static ResultReflection analysisExecutionTimeDuringReflection() {
-        logger.info("\nСравнение: прямой вызов vs рефлексия (20 итераций, без прогрева)");
+        logger.info("\nСравнение: прямой вызов vs рефлексия (с прогревом, 50 выборок)");
         File jarFile = new File("hw02_gradle.jar");
 
         try {
-            // 1. Подготовка (ОДИН РАЗ): загрузка JAR, класса и получение Method
+            URL jarUrl = jarFile.toURI().toURL();
+            // Создаём loader ДО замера: его инициализация не должна входить в накладные расходы поиска
+            URLClassLoader loader = new URLClassLoader(new URL[]{jarUrl});
+
+            // Замер накладных расходов: только поиск класса и метода
             long startSetup = System.nanoTime();
 
-            URL jarUrl = jarFile.toURI().toURL();
-            URLClassLoader loader = new URLClassLoader(new URL[]{jarUrl});
             Class<?> clazz = loader.loadClass("org.example.Main");
             Method mainMethod = clazz.getMethod("main", String[].class);
 
             double setupTimeMs = (System.nanoTime() - startSetup) / 1_000_000.0;
 
-            // 2. Только замер вызова (много раз)
-            List<Double> listTime = new ArrayList<>();
-            String[] emptyArgs = {};
+            Consumer<String[]> reflectiveConsumer = args -> {
+                try {
+                    mainMethod.invoke(null, (Object) args);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException("Нет доступа к методу main", e);
+                } catch (InvocationTargetException e) {
+                    Throwable cause = e.getCause();
+                    if (cause != null) {
+                        throw new RuntimeException("Ошибка внутри вызванного метода main", cause);
+                    } else {
+                        throw new RuntimeException("Ошибка вызова main через рефлексию", e);
+                    }
+                }
+            };
 
-            for (int i = 0; i < 20; i++) {
-                long startProject = System.nanoTime();
-                mainMethod.invoke(null, (Object) emptyArgs);
-                double elapsedMs = (System.nanoTime() - startProject) / 1_000_000.0;
-                listTime.add(elapsedMs);
-            }
+            double averageTimeMs = analyzingExecutionTimeClean(new String[]{}, reflectiveConsumer);
 
-            Runtime runtime = Runtime.getRuntime();
-            long maxMemory = runtime.maxMemory() / 1048576;
-            long totalMemory = runtime.totalMemory() / 1048576;
-            long freeMemory = runtime.freeMemory() / 1048576;
-
-            informationLogger(listTime, maxMemory, totalMemory, freeMemory);
-
-            double averageTimeMs = averageAccessTimeTenSamples(listTime);
+            loader.close();
 
             return new ResultReflection(averageTimeMs, setupTimeMs);
 
@@ -140,19 +133,18 @@ private static double analyzingExecutionTimeModifiedApplication(){
         } catch (NoSuchMethodException e) {
             logger.error("Метод main(String[]) не найден в классе", e);
             return null;
-        } catch (IllegalAccessException e) {
-            logger.error("Нет доступа к методу main", e);
+        } catch (RuntimeException e) {
+            logger.error("Ошибка при вызове main через рефлексию", e);
             return null;
-        } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            logger.error("Ошибка внутри вызванного метода main", cause != null ? cause : e);
+        } catch (Exception e) {
+            logger.error("Неожиданная ошибка при анализе рефлексии", e);
             return null;
         }
     }
 
     private static double averageAccessTimeTenSamples(List<Double> variables) {
         if (variables.isEmpty()) {
-            return 0.0; // защита от деления на ноль
+            return 0.0;
         }
         return variables.stream().mapToDouble(Double::doubleValue).sum() / variables.size();
     }
