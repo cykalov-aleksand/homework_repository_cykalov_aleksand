@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+   }
+
+group = 'org.example'
+version = 'unspecified'
+
+repositories {
+    mavenCentral()
+    google()
+    gradlePluginPortal()
+}
+jar {
+    manifest {
+        archiveFileName.set("exemplar.jar")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        attributes 'Main-Class': 'org.example.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+dependencies {
+
+    // Source: https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy-agent
+    implementation 'net.bytebuddy:byte-buddy-agent:1.18.11'
+    implementation 'net.bytebuddy:byte-buddy:1.18.11'
+     testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+tasks.register('logAgentJar', Jar) {
+    archiveBaseName = 'log-agent'
+    manifest {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        attributes(
+                'Premain-Class': 'org.example.LogAgent',
+                'Agent-Class': 'org.example.LogAgent',
+                'Can-Redefine-Classes': 'true',
+                'Can-Retransform-Classes': 'true'
+        )
+    }
+    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+}
+test {
+    useJUnitPlatform()
+}

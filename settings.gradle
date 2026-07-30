@@ -14,8 +14,7 @@ plugins {
 rootProject.name = 'homework_repository_cykalov_aleksand'
 include('app')
 include 'hw01-gradle'
-
-
 include 'hw02_gradle'
 include 'hw03_gradle'
 include 'hw04_gradle'
+include 'hw05_gradle'
