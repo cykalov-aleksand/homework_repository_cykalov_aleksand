@@ -1,4 +1,4 @@
-package org.example;
+package org.example.application;
 
 
 public class Demo {
@@ -11,5 +11,7 @@ public class Demo {
 
         public void action () {
             testLogging.calculation(6);
+            testLogging.calculation(5,5);
+            testLogging.calculation(10,11,"Результат");
         }
     }

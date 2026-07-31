@@ -1,4 +1,4 @@
-package org.example;
+package org.example.agent;
 
 import net.bytebuddy.implementation.bind.annotation.*;
 
@@ -12,14 +12,13 @@ public class LogInterceptor {
             @AllArguments Object[] args,
             @SuperCall Callable<?> callable) throws Exception {
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("executed method: ").append(method.getName());
+       StringBuilder sb = new StringBuilder();
+        sb.append("\nВ классе - ").append(target.getClass()).append("\n")
+                .append("выполнен метод: ").append(method.getName());
         for (int i = 0; i < args.length; i++) {
             sb.append(", param").append(i + 1).append(": ").append(args[i]);
         }
         System.out.println(sb.toString());
-
-        // ЭТО ВАЖНО: callable.call() — это вызов оригинального метода БЕЗ повторного перехвата
         return callable.call();
     }
 }

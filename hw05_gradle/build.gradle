@@ -1,18 +1,17 @@
 plugins {
     id 'java'
-   }
+    id 'com.gradleup.shadow' version '9.4.2'
+}
 
 group = 'org.example'
 version = 'unspecified'
 
 repositories {
     mavenCentral()
-    google()
-    gradlePluginPortal()
-}
+   }
 jar {
     manifest {
-        archiveFileName.set("exemplar.jar")
+        archiveFileName.set("application.jar")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         attributes 'Main-Class': 'org.example.Main'
     }
@@ -20,29 +19,32 @@ jar {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
-
-dependencies {
-
-    // Source: https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy-agent
-    implementation 'net.bytebuddy:byte-buddy-agent:1.18.11'
-    implementation 'net.bytebuddy:byte-buddy:1.18.11'
-     testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-tasks.register('logAgentJar', Jar) {
-    archiveBaseName = 'log-agent'
+shadowJar {
+    archiveFileName.set("agent.jar")
     manifest {
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         attributes(
-                'Premain-Class': 'org.example.LogAgent',
-                'Agent-Class': 'org.example.LogAgent',
+                'Premain-Class': 'org.example.agent.LogAgent',
+                'Agent-Class': 'org.example.agent.LogAgent',
                 'Can-Redefine-Classes': 'true',
                 'Can-Retransform-Classes': 'true'
         )
     }
-    from configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
 }
+
+tasks.register('runAgent', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.Main'
+    jvmArgs = ["-javaagent:${tasks.shadowJar.archiveFile.get().asFile}"]
+}
+
+dependencies {
+    implementation 'net.bytebuddy:byte-buddy-agent:1.18.11'
+    implementation 'net.bytebuddy:byte-buddy:1.18.11'
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
 test {
     useJUnitPlatform()
 }
