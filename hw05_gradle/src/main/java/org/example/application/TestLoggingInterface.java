@@ -1,7 +1,5 @@
 package org.example.application;
 
-import org.example.anatations.Log;
-
 public interface TestLoggingInterface {
 
     void calculation(int param);

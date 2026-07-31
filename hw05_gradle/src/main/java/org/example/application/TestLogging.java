@@ -1,6 +1,6 @@
 package org.example.application;
 
-import org.example.anatations.Log;
+import org.example.annotations.Log;
 
 public class TestLogging implements TestLoggingInterface {
     @Override

@@ -2,7 +2,7 @@ package org.example.agent;
 
 import net.bytebuddy.agent.builder.AgentBuilder;
 import net.bytebuddy.implementation.MethodDelegation;
-import org.example.anatations.Log;
+import org.example.annotations.Log;
 
 import java.lang.instrument.Instrumentation;
 
