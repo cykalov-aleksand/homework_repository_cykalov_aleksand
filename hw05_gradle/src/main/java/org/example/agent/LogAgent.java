@@ -21,8 +21,4 @@ public class LogAgent {
                                 .intercept(MethodDelegation.to(LogInterceptor.class)))
                 .installOn(inst);
     }
-
-   // public static void agentmain(String agentArgs, Instrumentation inst) {
-       // premain(agentArgs, inst);
-  //  }
 }

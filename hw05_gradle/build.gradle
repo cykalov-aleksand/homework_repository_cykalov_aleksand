@@ -38,8 +38,11 @@ tasks.register('runAgent', JavaExec) {
 }
 
 dependencies {
-    implementation 'net.bytebuddy:byte-buddy-agent:1.18.11'
     implementation 'net.bytebuddy:byte-buddy:1.18.11'
+    implementation 'net.bytebuddy:byte-buddy-agent:1.18.11'
+    implementation('org.slf4j:slf4j-api:2.0.18')
+    runtimeOnly('ch.qos.logback:logback-core:1.5.35')
+    runtimeOnly('ch.qos.logback:logback-classic:1.5.35')
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
