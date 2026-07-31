@@ -19,5 +19,13 @@ public class TestLogging implements TestLoggingInterface {
     @Log
     public void calculation(int param1, int param2, String param3) {
         System.out.println("param1 +param2 = "+(param1+param2)+" "+param3);
+        method();
+        }
+    @Log
+    private void method (){
+        System.out.println("Приватный логированный метод");
+    }
+    public void methodOne (String param){
+        System.out.println(param);
     }
 }

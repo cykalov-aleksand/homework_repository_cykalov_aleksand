@@ -23,7 +23,7 @@ public class LogInterceptor {
         }
         logger.info(sb.toString());
         Object object=callable.call();
-        logger.info(" Log после выполнения метода\n");
+        logger.info(" Log после выполнения метода {}\n",method.getName());
         return object;
     }
 }
