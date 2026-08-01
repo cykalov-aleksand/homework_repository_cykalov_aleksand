@@ -4,6 +4,7 @@ import net.bytebuddy.implementation.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.Callable;
 
 public class LogInterceptor {
@@ -14,16 +15,27 @@ public class LogInterceptor {
             @This Object target,
             @AllArguments Object[] args,
             @SuperCall Callable<?> callable) throws Exception {
+        outPrintEnglish(target, method,args);
+       // outPrintLogger(target, method,args);
+        return callable.call();
+           }
 
-       StringBuilder sb = new StringBuilder();
+    private static void outPrintLogger(Object target, Method method,Object[]args){
+        StringBuilder sb = new StringBuilder();
         sb.append("В классе - ").append(target.getClass()).
                 append(" выполнен метод: ").append(method.getName());
         for (int i = 0; i < args.length; i++) {
             sb.append(", param").append(i + 1).append(": ").append(args[i]);
         }
         logger.info(sb.toString());
-        Object object=callable.call();
-        logger.info(" Log после выполнения метода {}\n",method.getName());
-        return object;
+    }
+    private static void outPrintEnglish(Object target, Method method,Object[]args){
+        StringBuilder sb = new StringBuilder();
+        sb.append("In the class - ").append(target.getClass()).
+                append(" executed method: ").append(method.getName());
+        for (int i = 0; i < args.length; i++) {
+            sb.append(", param").append(i + 1).append(": ").append(args[i]);
+        }
+        System.out.println(sb.toString());
     }
 }

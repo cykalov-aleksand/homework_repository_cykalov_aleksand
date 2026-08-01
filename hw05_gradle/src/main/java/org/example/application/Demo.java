@@ -1,6 +1,8 @@
 package org.example.application;
 
 
+import org.example.annotations.Log;
+
 public class Demo {
     private final TestLogging testLogging;
 
@@ -8,7 +10,7 @@ public class Demo {
     public Demo() {
             this.testLogging = new TestLogging();
         }
-
+    @Log
         public void action () {
             testLogging.calculation(6);
             testLogging.calculation(5,5);
