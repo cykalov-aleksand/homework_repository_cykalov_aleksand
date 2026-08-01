@@ -15,8 +15,7 @@ public class LogInterceptor {
             @This Object target,
             @AllArguments Object[] args,
             @SuperCall Callable<?> callable) throws Exception {
-        outPrintEnglish(target, method,args);
-       // outPrintLogger(target, method,args);
+           outPrintLogger(target, method,args);
         return callable.call();
            }
 
@@ -29,13 +28,5 @@ public class LogInterceptor {
         }
         logger.info(sb.toString());
     }
-    private static void outPrintEnglish(Object target, Method method,Object[]args){
-        StringBuilder sb = new StringBuilder();
-        sb.append("In the class - ").append(target.getClass()).
-                append(" executed method: ").append(method.getName());
-        for (int i = 0; i < args.length; i++) {
-            sb.append(", param").append(i + 1).append(": ").append(args[i]);
-        }
-        System.out.println(sb.toString());
-    }
+
 }
