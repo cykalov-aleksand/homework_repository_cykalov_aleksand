@@ -1,9 +1,9 @@
 package org.example;
 
 
-import org.example.anatations.After;
-import org.example.anatations.Before;
-import org.example.anatations.Test;
+import org.example.annotations.After;
+import org.example.annotations.Before;
+import org.example.annotations.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

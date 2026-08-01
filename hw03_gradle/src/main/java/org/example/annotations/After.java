@@ -1,4 +1,4 @@
-package org.example.anatations;
+package org.example.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

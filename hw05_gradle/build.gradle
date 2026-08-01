@@ -1,0 +1,53 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '9.4.2'
+}
+
+group = 'org.example'
+version = 'unspecified'
+
+repositories {
+    mavenCentral()
+   }
+jar {
+    manifest {
+        archiveFileName.set("application.jar")
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        attributes 'Main-Class': 'org.example.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+shadowJar {
+    archiveFileName.set("agent.jar")
+    manifest {
+        attributes(
+                'Premain-Class': 'org.example.agent.LogAgent',
+                'Agent-Class': 'org.example.agent.LogAgent',
+                'Can-Redefine-Classes': 'true',
+                'Can-Retransform-Classes': 'true'
+        )
+    }
+}
+
+tasks.register('runAgent', JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = 'org.example.Main'
+    jvmArgs = ["-javaagent:${tasks.shadowJar.archiveFile.get().asFile}"]
+}
+
+dependencies {
+    implementation 'net.bytebuddy:byte-buddy:1.18.11'
+    implementation 'net.bytebuddy:byte-buddy-agent:1.18.11'
+    implementation('org.slf4j:slf4j-api:2.0.18')
+    runtimeOnly('ch.qos.logback:logback-core:1.5.35')
+    runtimeOnly('ch.qos.logback:logback-classic:1.5.35')
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
