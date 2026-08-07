@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class CashMoneyTest {
     @Test
     public void acceptDeposit_ShouldIncreaseATMBalance() {
-        log.info("Тест на проверку приёма денег банкоматом");
+        logger.info("Тест на проверку приёма денег банкоматом");
 
         CashMoneyATM atm = new CashMoneyATM(2, 0, 0, 0, 10, 0, 0, 0, 0, 0);
         int initialBalance = atm.amountOfCash();
@@ -29,7 +29,7 @@ public class CashMoneyTest {
 
     @Test
     public void amountOfCash_ShouldCalculateTotalCorrectly() {
-        log.info("Тест на проверку вывода корректной суммы по количеству банкнот в ATM");
+        logger.info("Тест на проверку вывода корректной суммы по количеству банкнот в ATM");
         CashMoneyATM cash = new CashMoneyATM(1, 0, 1, 1, 1, 1, 1, 1, 1, 1);
         int total = 5000 + 1000 + 500 + 100 + 50 + 10 + 5 + 2 + 1;
 
@@ -38,7 +38,7 @@ public class CashMoneyTest {
 
     @Test
     public void withdrawAndUpdateState_ShouldDeductWithdrawnAmount() {
-        log.info("Тест на проверку выдачи денег и обновления состояния");
+        logger.info("Тест на проверку выдачи денег и обновления состояния");
         CashMoneyATM cash = new CashMoneyATM(2, 0, 0, 0, 10, 0, 0, 0, 0, 0); // 2 по 5000 и 5 по 100 = 10500
         int initialAmount = cash.amountOfCash();
         Map<String, Integer> issued = cash.withdrawAndUpdateAfterIssue(6000);
@@ -49,7 +49,7 @@ public class CashMoneyTest {
 
     @Test
     public void throwingExceptionIfValueNegative() {
-        log.info("Тест на выброс исключения при вводе отрицательного значения.");
+        logger.info("Тест на выброс исключения при вводе отрицательного значения.");
         CashMoneyATM cash = new CashMoneyATM(2, 0, 0, 0, 10, 0, 0, 0, 0, 0); // 2 по 5000 и 5 по 100 = 10500
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->
                 cash.withdrawAndUpdateAfterIssue(-6000));
@@ -58,7 +58,7 @@ public class CashMoneyTest {
 
     @Test
     public void issuingExceptionForSmallAmount() {
-        log.info("Тест на проверку недостаточной суммы денег в банкомате");
+        logger.info("Тест на проверку недостаточной суммы денег в банкомате");
         CashMoneyATM cash = new CashMoneyATM(2, 0, 0, 0, 10, 0, 0, 0, 0, 0);
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->
@@ -68,7 +68,7 @@ public class CashMoneyTest {
 
     @Test
     public void issuingExceptionIfRequiredAmountMissing() {
-        log.info("Тест на проверку отсутствия нужной суммы в банкомате");
+        logger.info("Тест на проверку отсутствия нужной суммы в банкомате");
         CashMoneyATM cash = new CashMoneyATM(2, 0, 0, 0, 10, 0, 0, 0, 0, 0);
 
         Throwable exception = assertThrows(IllegalArgumentException.class, () ->

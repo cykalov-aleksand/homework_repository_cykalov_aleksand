@@ -2,15 +2,13 @@ package org.example;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import org.example.currencyAbstract.CashMoneyRubleAbstract;
+import org.example.currency.currencyAbstract.CashMoneyRubleAbstract;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Getter
 @Setter
-@ToString
 public class CashMoneyATM extends CashMoneyRubleAbstract implements InterfaceCurrencyATM {
 
     public CashMoneyATM(int fiveThousand, int twoThousand, int oneThousand, int fiveHundred, int hundred, int fifty, int ten, int five, int two, int one) {
@@ -84,4 +82,8 @@ public class CashMoneyATM extends CashMoneyRubleAbstract implements InterfaceCur
         return sum - count * nominal;
     }
 
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
