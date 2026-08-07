@@ -14,6 +14,7 @@ public class CashMoneyATM extends CashMoneyRubleAbstract implements InterfaceCur
     public CashMoneyATM(int fiveThousand, int twoThousand, int oneThousand, int fiveHundred, int hundred, int fifty, int ten, int five, int two, int one) {
         super(fiveThousand, twoThousand, oneThousand, fiveHundred, hundred, fifty, ten, five, two, one);
     }
+    @Override
     public int acceptDeposit(CashMoneyPerson cashMoneyPerson){
         this.fiveThousand += cashMoneyPerson.getFiveThousand();
         this.twoThousand += cashMoneyPerson.getTwoThousand();
@@ -27,6 +28,7 @@ public class CashMoneyATM extends CashMoneyRubleAbstract implements InterfaceCur
         this.one += cashMoneyPerson.getOne();
         return cashMoneyPerson.amountOfCash();
     }
+    @Override
     public Map<String, Integer> withdrawAndUpdateAfterIssue(int cash){
         Map<String, Integer> issued = giveOutCash(cash);
         this.fiveThousand -= issued.getOrDefault("5000", 0);
@@ -70,8 +72,6 @@ public class CashMoneyATM extends CashMoneyRubleAbstract implements InterfaceCur
         if (sum != 0) {
             throw new IllegalArgumentException("Невозможно выдать точную сумму имеющимися купюрами");
         }
-
-
         return cashWithdrawal;
     }
 
