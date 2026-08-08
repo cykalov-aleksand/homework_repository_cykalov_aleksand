@@ -40,5 +40,10 @@ public abstract class AbstractCash implements Currency {
         public int getCount(int nominal) {
             return banknotes.getOrDefault(nominal, 0);
         }
+
+    @Override
+    public String toString() {
+        return "banknotes=" + banknotes ;
     }
+}
 

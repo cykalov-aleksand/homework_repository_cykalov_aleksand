@@ -78,4 +78,9 @@ this.cash=createNewCash(availableBanknotes);
         };
     }
 
+    @Override
+    public String toString() {
+        return "currencyType=" + currencyType +
+                ", cash=" + cash;
+    }
 }
