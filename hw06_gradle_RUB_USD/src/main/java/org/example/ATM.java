@@ -14,8 +14,10 @@ public class ATM implements InterfaceCurrencyATM{
     private AbstractCash cash;
 
     public ATM(CurrencyType currencyType, Map<Integer, Integer> banknotes) {
+        if (currencyType == null) {
+            throw new IllegalArgumentException("Валюта не может быть null");
+        }
         this.currencyType = currencyType;
-
         this.cash = switch (currencyType) {
             case RUB -> new RubleCash(banknotes);
             case USD -> new DollarCash(banknotes);
