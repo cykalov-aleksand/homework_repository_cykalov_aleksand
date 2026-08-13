@@ -35,4 +35,5 @@ public class Demo {
 
         complexProcessor.removeListener(listenerPrinter);
     }
+
 }
