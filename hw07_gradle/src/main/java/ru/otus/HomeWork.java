@@ -30,7 +30,6 @@ public class HomeWork {
 private static Logger logger= LoggerFactory.getLogger(HomeWork.class);
     public static void main(String[] args) {
         var processors = List.of(new ProcessorConcatFields(), new LoggerProcessor(new ProcessorUpperField10()), new SwapField11AndField12Processor());
-
         var complexProcessor = new ComplexProcessor(processors, ex -> {});
         var listenerPrinter = new ListenerPrinterConsole();
         complexProcessor.addListener(listenerPrinter);
