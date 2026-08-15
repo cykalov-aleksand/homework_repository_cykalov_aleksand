@@ -1,12 +1,15 @@
 package ru.otus.listener.homework;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
-import java.util.ArrayList;
+import org.example.homework.listener.homework.HistoryListener;
+import org.example.homework.model.Message;
+import org.example.homework.model.ObjectForMessage;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import ru.otus.model.Message;
-import ru.otus.model.ObjectForMessage;
+
+
+import java.util.ArrayList;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SuppressWarnings({"java:S1135", "java:S125"})
 class HistoryListenerTest {
@@ -41,3 +44,4 @@ class HistoryListenerTest {
         // assertThat(messageFromHistory.get().getField13().getData()).containsExactly(data);
     }
 }
+

@@ -1,20 +1,19 @@
 package ru.otus.handler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.example.homework.handler.ComplexProcessor;
+import org.example.homework.listener.Listener;
+import org.example.homework.model.Message;
+import org.example.homework.processor.Processor;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import ru.otus.listener.Listener;
-import ru.otus.model.Message;
-import ru.otus.processor.Processor;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("java:S1611")
 class ComplexProcessorTest {
@@ -97,3 +96,4 @@ class ComplexProcessorTest {
         }
     }
 }
+
