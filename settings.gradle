@@ -20,3 +20,5 @@ include 'hw04_gradle'
 include 'hw05_gradle'
 include 'hw06_gradle_RUB_USD'
 include 'hw06_gradle'
+
+include 'hw07_gradle'
