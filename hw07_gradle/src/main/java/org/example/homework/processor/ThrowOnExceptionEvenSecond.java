@@ -1,7 +1,6 @@
-package org.example.homework.processor.homework;
+package org.example.homework.processor;
 
 import org.example.homework.model.Message;
-import org.example.homework.processor.Processor;
 
 import java.time.LocalTime;
 import java.util.Objects;

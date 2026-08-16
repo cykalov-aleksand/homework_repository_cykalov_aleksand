@@ -2,7 +2,7 @@ package ru.otus.processor;
 
 import org.example.homework.model.Message;
 import org.example.homework.processor.Processor;
-import org.example.homework.processor.homework.ThrowOnExceptionEvenSecond;
+import org.example.homework.processor.ThrowOnExceptionEvenSecond;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

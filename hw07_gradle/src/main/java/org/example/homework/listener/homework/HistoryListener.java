@@ -2,18 +2,75 @@ package org.example.homework.listener.homework;
 
 import org.example.homework.listener.Listener;
 import org.example.homework.model.Message;
+import org.example.homework.model.ObjectForMessage;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HistoryListener implements Listener, HistoryReader {
+    private final List<Message> history = new CopyOnWriteArrayList<>();
+    private final Map<Long, Message> messageById = new ConcurrentHashMap<>();
 
     @Override
     public void onUpdated(Message msg) {
-        throw new UnsupportedOperationException();
+        if (msg == null) {
+            return;
+        }
+
+        // Создаём глубокую копию сообщения
+        Message copy = deepCopyMessage(msg);
+
+        history.add(copy);
+        messageById.put(copy.getId(), copy);
     }
 
     @Override
     public Optional<Message> findMessageById(long id) {
-        throw new UnsupportedOperationException();
+
+        Message message = messageById.get(id);
+        if (message == null) {
+            return Optional.empty();
+        }
+        return Optional.of(deepCopyMessage(message));
+        }
+    private Message deepCopyMessage(Message original) {
+        ObjectForMessage originalField13 = original.getField13();
+        ObjectForMessage copyField13 = null;
+
+        if (originalField13 != null) {
+            List<String> originalData = originalField13.getData();
+            List<String> copyData = (originalData != null)
+                    ? new ArrayList<>(originalData)  // копируем список
+                    : null;
+            copyField13 = new ObjectForMessage();
+            copyField13.setData(copyData);
+        }
+
+        return original.toBuilder()
+                .field13(copyField13)
+                .build();
+    }
+
+    /**
+     * Возвращает неизменяемую копию всей истории.
+     */
+    public List<Message> getHistory() {
+        List<Message> result = new ArrayList<>();
+        for (Message m : history) {
+            result.add(deepCopyMessage(m));
+        }
+        return Collections.unmodifiableList(result);
+    }
+    public void clear() {
+        history.clear();
+        messageById.clear();
+    }
+
+    /**
+     * Количество сообщений в истории.
+     */
+    public int size() {
+        return history.size();
     }
 }
