@@ -3,6 +3,8 @@ package org.example.homework.listener.homework;
 import org.example.homework.listener.Listener;
 import org.example.homework.model.Message;
 import org.example.homework.model.ObjectForMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,6 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class HistoryListener implements Listener, HistoryReader {
     private final List<Message> history = new CopyOnWriteArrayList<>();
     private final Map<Long, Message> messageById = new ConcurrentHashMap<>();
+    private static Logger logger= LoggerFactory.getLogger(HistoryListener.class);
 
     @Override
     public void onUpdated(Message msg) {
@@ -23,6 +26,7 @@ public class HistoryListener implements Listener, HistoryReader {
 
         history.add(copy);
         messageById.put(copy.getId(), copy);
+        logger.info("HistoryListener: сохранено сообщение ID={}", msg.getId());
     }
 
     @Override
@@ -58,7 +62,7 @@ public class HistoryListener implements Listener, HistoryReader {
     public List<Message> getHistory() {
         List<Message> result = new ArrayList<>();
         for (Message m : history) {
-            result.add(deepCopyMessage(m));
+           result.add(deepCopyMessage(m));
         }
         return Collections.unmodifiableList(result);
     }

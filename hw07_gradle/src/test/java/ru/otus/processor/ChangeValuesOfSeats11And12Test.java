@@ -2,7 +2,7 @@ package ru.otus.processor;
 
 import org.example.homework.model.Message;
 import org.example.homework.model.ObjectForMessage;
-import org.example.homework.processor.ChangeValuesOfSeats11And12;
+import org.example.homework.processor.ChangeValuesOfField11And12;
 import org.example.homework.processor.Processor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class ChangeValuesOfSeats11And12Test {
     void setUp() {
         ObjectForMessage object = new ObjectForMessage();
         object.setData(List.of("x", "y", "z"));
-        processor = new ChangeValuesOfSeats11And12();
+        processor = new ChangeValuesOfField11And12();
 
 
         message = new Message.Builder(1L)

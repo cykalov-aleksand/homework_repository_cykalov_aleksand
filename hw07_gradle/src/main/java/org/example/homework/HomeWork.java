@@ -5,7 +5,7 @@ import org.example.homework.listener.ListenerPrinterConsole;
 import org.example.homework.listener.homework.HistoryListener;
 import org.example.homework.model.Message;
 import org.example.homework.model.ObjectForMessage;
-import org.example.homework.processor.ChangeValuesOfSeats11And12;
+import org.example.homework.processor.ChangeValuesOfField11And12;
 import org.example.homework.processor.LoggerProcessor;
 import org.example.homework.processor.ProcessorConcatFields;
 import org.example.homework.processor.ProcessorUpperField10;
@@ -34,7 +34,7 @@ public class HomeWork {
     public static void main(String[] args) {
         var processorConcat = new ProcessorConcatFields();
         var processorUpper = new LoggerProcessor(new ProcessorUpperField10());
-        var processorSwap = new ChangeValuesOfSeats11And12();
+        var processorSwap = new ChangeValuesOfField11And12();
 
         // Для демонстрации исключения — зафиксируем секунду (например, 4 — чётная)
         var throwOnEven = new ThrowOnExceptionEvenSecond(3); // будет кидать исключение
@@ -85,6 +85,7 @@ public class HomeWork {
         // Показываем историю изменений
         logger.info("\n=== ИСТОРИЯ ИЗМЕНЕНИЙ ===");
         var history = historyListener.getHistory();
+        logger.info("Размер истории: {}", history.size());
         for (int i = 0; i < history.size(); i++) {
             logger.info("История [{}]: {}", i + 1, history.get(i));
         }
