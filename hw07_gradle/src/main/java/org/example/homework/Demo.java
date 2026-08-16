@@ -17,7 +17,8 @@ public class Demo {
     public static void main(String[] args) {
         var processors = List.of(new ProcessorConcatFields(), new LoggerProcessor(new ProcessorUpperField10()));
 
-        var complexProcessor = new ComplexProcessor(processors, ex -> {});
+        var complexProcessor = new ComplexProcessor(processors, ex -> {
+        });
         var listenerPrinter = new ListenerPrinterConsole();
         complexProcessor.addListener(listenerPrinter);
 

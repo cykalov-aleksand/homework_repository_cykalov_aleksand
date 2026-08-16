@@ -15,7 +15,7 @@ public class LoggerProcessor implements Processor {
 
     @Override
     public Message process(Message message) {
-logger.info("Processor '{}' обрабатывает сообщение: {}", processor.getClass().getSimpleName(), message);
+        logger.info("Processor '{}' обрабатывает сообщение: {}", processor.getClass().getSimpleName(), message);
         return processor.process(message);
     }
 }

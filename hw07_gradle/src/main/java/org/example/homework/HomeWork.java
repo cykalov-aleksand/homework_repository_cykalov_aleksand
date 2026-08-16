@@ -17,27 +17,15 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class HomeWork {
-
-    /*
-    Реализовать to do:
-      1. Добавить поля field11 - field13 (для field13 используйте класс ObjectForMessage)
-      2. Сделать процессор, который поменяет местами значения field11 и field12
-      3. Сделать процессор, который будет выбрасывать исключение в четную секунду (сделайте тест с гарантированным результатом)
-            Секунда должна определяьться во время выполнения.
-            Тест - важная часть задания
-            Обязательно посмотрите пример к паттерну Мементо!
-      4. Сделать Listener для ведения истории (подумайте, как сделать, чтобы сообщения не портились)
-         Уже есть заготовка - класс HistoryListener, надо сделать его реализацию
-         Для него уже есть тест, убедитесь, что тест проходит
-    */
     private static final Logger logger = LoggerFactory.getLogger(HomeWork.class);
+
     public static void main(String[] args) {
         var processorConcat = new ProcessorConcatFields();
         var processorUpper = new LoggerProcessor(new ProcessorUpperField10());
         var processorSwap = new ChangeValuesOfField11And12();
 
         // Для демонстрации исключения — зафиксируем секунду (например, 4 — чётная)
-        var throwOnEven = new ThrowOnExceptionEvenSecond(3); // будет кидать исключение
+        var throwOnEven = new ThrowOnExceptionEvenSecond(3);
 
         // Цепочка процессоров
         var processors = List.of(processorConcat, processorUpper, processorSwap, throwOnEven);
@@ -72,7 +60,7 @@ public class HomeWork {
         logger.info("Исходное сообщение: {}", originalMessage);
 
         // Обработка сообщения
-        Message result = null;
+        Message result;
         try {
             logger.info("Обработанное сообщение");
             result = complexProcessor.handle(originalMessage);

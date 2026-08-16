@@ -5,6 +5,9 @@ import org.example.homework.processor.Processor;
 import org.example.homework.processor.ThrowOnExceptionEvenSecond;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.function.Supplier;
 
@@ -15,6 +18,7 @@ public class ThrowOnExceptionEvenSecondTest {
     private Message message;
     private final Supplier<Integer> evenSecond = () -> 10;   // чётная
     private final Supplier<Integer> oddSecond  = () -> 11;   // нечётная
+    private static final Logger logger= LoggerFactory.getLogger(ThrowOnExceptionEvenSecondTest.class);
 
     @BeforeEach
     void setUp() {
@@ -24,16 +28,14 @@ public class ThrowOnExceptionEvenSecondTest {
                 .field2("data")
                 .field11("value11")
                 .field12("value12")
-                .field13(null) // можно заменить на реальный объект при необходимости
+                .field13(null)
                 .build();
     }
 
     @Test
     void shouldThrowExceptionOnEvenSecond() {
-        // Given
+        logger.info("Проводим тест на работу метода при четной секунде");
         Processor processor = new ThrowOnExceptionEvenSecond(evenSecond);
-
-        // When & Then
         IllegalStateException exception = assertThrows(
                 IllegalStateException.class,
                 () -> processor.process(message),
@@ -46,11 +48,9 @@ public class ThrowOnExceptionEvenSecondTest {
 
     @Test
     void shouldNotThrowOnOddSecond() {
-        // Given
+        logger.info("Проводим тест на работу метода при не четной секунде");
         Processor processor = new ThrowOnExceptionEvenSecond(oddSecond);
-
-        // When & Then
-        assertDoesNotThrow(
+       assertDoesNotThrow(
                 () -> processor.process(message),
                 "В нечётную секунду исключение не должно выбрасываться"
         );
@@ -58,13 +58,9 @@ public class ThrowOnExceptionEvenSecondTest {
 
     @Test
     void shouldUseCurrentTimeInDefaultConstructor() {
-        // Given
+        logger.info("Тест на работу метода с реальным временем");
         Processor processor = new ThrowOnExceptionEvenSecond();
-
-        // When
         int currentSecond = java.time.LocalTime.now().getSecond();
-
-        // Then
         if (currentSecond % 2 == 0) {
             assertThrows(IllegalStateException.class, () -> processor.process(message));
         } else {
@@ -74,7 +70,7 @@ public class ThrowOnExceptionEvenSecondTest {
 
     @Test
     void shouldWorkWithFixedSecondViaIntConstructor() {
-        // Given
+        logger.info("Тест на проверку работы метода по времени заданному через конструктор");
         Processor evenProcessor = new ThrowOnExceptionEvenSecond(4);
         Processor oddProcessor  = new ThrowOnExceptionEvenSecond(5);
 
@@ -85,26 +81,18 @@ public class ThrowOnExceptionEvenSecondTest {
 
     @Test
     void shouldNotAllowNullSupplier() {
-        // When & Then
-        NullPointerException exception = assertThrows(
-                NullPointerException.class,
+        logger.info("Тест на проверку выбрасывания исключения при задании в конструкторе времени равном null");
+           NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> new ThrowOnExceptionEvenSecond((Supplier<Integer>) null),
                 "Конструктор должен отвергать null"
         );
-
-        // Проверяем, что сообщение содержит наш текст (если вы добавили Objects.requireNonNull)
-        // Если вы НЕ добавили проверку, этот тест упадёт — значит, нужно добавить!
-    }
+  }
 
     @Test
     void shouldReturnSameMessageWhenNoException() {
-        // Given
+        logger.info("Тест на проверку возвращения исходного объекта при нечётной секунде");
         Processor processor = new ThrowOnExceptionEvenSecond(oddSecond);
-
-        // When
         Message result = processor.process(message);
-
-        // Then
         assertSame(message, result, "При нечётной секунде должно возвращаться исходное сообщение");
     }
 }

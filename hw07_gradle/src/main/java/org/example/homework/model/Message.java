@@ -46,9 +46,9 @@ public class Message {
         this.field8 = field8;
         this.field9 = field9;
         this.field10 = field10;
-        this.field11=field11;
-        this.field12=field12;
-        this.field13=field13;
+        this.field11 = field11;
+        this.field12 = field12;
+        this.field13 = field13;
     }
 
     public long getId() {
@@ -94,6 +94,7 @@ public class Message {
     public String getField10() {
         return field10;
     }
+
     public String getField11() {
         return field11;
     }
@@ -105,6 +106,7 @@ public class Message {
     public ObjectForMessage getField13() {
         return field13;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -121,7 +123,7 @@ public class Message {
     }
 
     public Builder toBuilder() {
-        return new Builder(id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10,field11, field12, field13);
+        return new Builder(id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13);
     }
 
     @Override
@@ -159,6 +161,7 @@ public class Message {
         private String field11;
         private String field12;
         private ObjectForMessage field13;
+
         public Builder(long id) {
             this.id = id;
         }
@@ -243,6 +246,7 @@ public class Message {
             this.field10 = field10;
             return this;
         }
+
         public Builder field11(String field11) {
             this.field11 = field11;
             return this;
@@ -259,7 +263,7 @@ public class Message {
         }
 
         public Message build() {
-            return new Message(id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10,field11, field12, field13);
+            return new Message(id, field1, field2, field3, field4, field5, field6, field7, field8, field9, field10, field11, field12, field13);
         }
     }
 }
