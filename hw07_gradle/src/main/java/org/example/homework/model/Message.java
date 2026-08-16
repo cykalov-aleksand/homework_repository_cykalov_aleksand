@@ -126,20 +126,22 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message{" + "id="
-                + id + ", field1='"
-                + field1 + '\'' + ", field2='"
-                + field2 + '\'' + ", field3='"
-                + field3 + '\'' + ", field4='"
-                + field4 + '\'' + ", field5='"
-                + field5 + '\'' + ", field6='"
-                + field6 + '\'' + ", field7='"
-                + field7 + '\'' + ", field8='"
-                + field8 + '\'' + ", field9='"
-                + field9 + '\'' + ", field10='"
-                + field10 + '\'' + ", field11='"
-                + field11 + '\'' + ", field12='"
-                + field13 + '\'' + '}';
+        return "Message{" +
+                "id=" + id +
+                ", field1='" + field1 + '\'' +
+                ", field2='" + field2 + '\'' +
+                ", field3='" + field3 + '\'' +
+                ", field4='" + field4 + '\'' +
+                ", field5='" + field5 + '\'' +
+                ", field6='" + field6 + '\'' +
+                ", field7='" + field7 + '\'' +
+                ", field8='" + field8 + '\'' +
+                ", field9='" + field9 + '\'' +
+                ", field10='" + field10 + '\'' +
+                ", field11='" + field11 + '\'' +
+                ", field12='" + field12 + '\'' +
+                ", field13=" + field13 +
+                '}';
     }
 
     public static class Builder {
