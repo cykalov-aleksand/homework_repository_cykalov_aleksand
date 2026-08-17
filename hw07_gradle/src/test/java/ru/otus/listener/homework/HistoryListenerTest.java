@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HistoryListenerTest {
 
     @Test
-            //@Disabled("удалить для запуска тест")
+        //@Disabled("удалить для запуска тест")
     void listenerTest() {
         // given
         var historyListener = new HistoryListener();
@@ -34,10 +34,10 @@ class HistoryListenerTest {
 
         historyListener.onUpdated(message);
         message.getField13().setData(new ArrayList<>()); //меняем исходное сообщение
-       field13Data.clear(); //меняем исходный список
-       var messageFromHistory = historyListener.findMessageById(id);
+        field13Data.clear(); //меняем исходный список
+        var messageFromHistory = historyListener.findMessageById(id);
         assertThat(messageFromHistory).isPresent();
-       assertThat(messageFromHistory.get().getField13().getData()).containsExactly(data);
+        assertThat(messageFromHistory.get().getField13().getData()).containsExactly(data);
     }
 }
 

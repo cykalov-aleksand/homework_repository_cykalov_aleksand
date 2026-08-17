@@ -17,8 +17,8 @@ public class ThrowOnExceptionEvenSecondTest {
 
     private Message message;
     private final Supplier<Integer> evenSecond = () -> 10;   // чётная
-    private final Supplier<Integer> oddSecond  = () -> 11;   // нечётная
-    private static final Logger logger= LoggerFactory.getLogger(ThrowOnExceptionEvenSecondTest.class);
+    private final Supplier<Integer> oddSecond = () -> 11;   // нечётная
+    private static final Logger logger = LoggerFactory.getLogger(ThrowOnExceptionEvenSecondTest.class);
 
     @BeforeEach
     void setUp() {
@@ -50,7 +50,7 @@ public class ThrowOnExceptionEvenSecondTest {
     void shouldNotThrowOnOddSecond() {
         logger.info("Проводим тест на работу метода при не четной секунде");
         Processor processor = new ThrowOnExceptionEvenSecond(oddSecond);
-       assertDoesNotThrow(
+        assertDoesNotThrow(
                 () -> processor.process(message),
                 "В нечётную секунду исключение не должно выбрасываться"
         );
@@ -72,7 +72,7 @@ public class ThrowOnExceptionEvenSecondTest {
     void shouldWorkWithFixedSecondViaIntConstructor() {
         logger.info("Тест на проверку работы метода по времени заданному через конструктор");
         Processor evenProcessor = new ThrowOnExceptionEvenSecond(4);
-        Processor oddProcessor  = new ThrowOnExceptionEvenSecond(5);
+        Processor oddProcessor = new ThrowOnExceptionEvenSecond(5);
 
         // Then
         assertThrows(IllegalStateException.class, () -> evenProcessor.process(message));
@@ -82,11 +82,11 @@ public class ThrowOnExceptionEvenSecondTest {
     @Test
     void shouldNotAllowNullSupplier() {
         logger.info("Тест на проверку выбрасывания исключения при задании в конструкторе времени равном null");
-           NullPointerException exception = assertThrows(NullPointerException.class,
+        NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> new ThrowOnExceptionEvenSecond((Supplier<Integer>) null),
                 "Конструктор должен отвергать null"
         );
-  }
+    }
 
     @Test
     void shouldReturnSameMessageWhenNoException() {
