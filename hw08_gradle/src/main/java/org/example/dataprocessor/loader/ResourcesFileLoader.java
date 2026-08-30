@@ -8,7 +8,6 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -36,18 +35,17 @@ public class ResourcesFileLoader implements Loader {
                 throw new FileProcessException(msg);
             }
 
-            List<Measurement> result = mapper.readValue(file, new TypeReference<List<Measurement>>() {
+            List<Measurement> result = mapper.readValue(file, new TypeReference<>() {
             });
             return result != null ? result : Collections.emptyList();
 
         } catch (FileProcessException e) {
-            throw e; // пробрасываем
+            throw e;
         } catch (JacksonException e) {
             String msg = "Ошибка при чтении JSON из файла: " + fileName;
             logger.error(msg, e);
             throw new FileProcessException(msg, e);
         } catch (Exception e) {
-            // на всякий случай — всё остальное
             logger.error("Неизвестная ошибка при загрузке файла: {}", fileName, e);
             throw new FileProcessException("Неизвестная ошибка при загрузке: " + fileName, e);
         }
