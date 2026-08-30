@@ -1,7 +1,5 @@
 package org.example.dataprocessor;
 
-
-
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.example.dataprocessor.loader.ResourcesFileLoader;
 import org.example.dataprocessor.processor.ProcessorAggregator;
