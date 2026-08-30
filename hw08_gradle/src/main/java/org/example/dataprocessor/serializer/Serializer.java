@@ -1,4 +1,4 @@
-package org.example.dataprocessor;
+package org.example.dataprocessor.serializer;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package org.example.dataprocessor;
+package org.example.dataprocessor.loader;
 
 import org.example.model.Measurement;
 
