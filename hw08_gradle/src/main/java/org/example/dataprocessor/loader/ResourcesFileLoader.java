@@ -1,5 +1,6 @@
 package org.example.dataprocessor.loader;
 
+import org.example.dataprocessor.FileProcessException;
 import org.example.model.Measurement;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.json.JsonMapper;
@@ -29,12 +30,12 @@ private final JsonMapper mapper;
         //             }
         try (InputStream file = getClass().getClassLoader().getResourceAsStream(fileName)) {
             if (file == null) {
-                throw new IllegalArgumentException("Файл не найден в resources: " + fileName);
+                throw new FileProcessException("Файл не найден в resources: " + fileName);
             }
             List<Measurement> result = mapper.readValue(file, new TypeReference<>() {
             });
             return result != null ? result : Collections.emptyList();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при чтении JSON из файла " + fileName, e);
+            throw new FileProcessException("Ошибка при чтении JSON из файла " + fileName, e);
         }
     }}

@@ -1,5 +1,6 @@
 package org.example.dataprocessor.serializer;
 
+import org.example.dataprocessor.FileProcessException;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.io.File;
@@ -23,13 +24,13 @@ public class FileSerializer implements Serializer {
         File file = new File(fileName);
         File parentDir = file.getParentFile();
         if (parentDir != null && !parentDir.exists() && !parentDir.mkdirs()) {
-            throw new RuntimeException("Не удалось создать директорию: " + parentDir.getAbsolutePath());
+            throw new FileProcessException("Не удалось создать директорию: " + parentDir.getAbsolutePath());
         }
 
         try (OutputStream os = new FileOutputStream(file)) {
             mapper.writeValue(os, data);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при записи JSON в файл: " + fileName, e);
+            throw new FileProcessException("Ошибка при записи JSON в файл: " + fileName, e);
         }
     }
 }
