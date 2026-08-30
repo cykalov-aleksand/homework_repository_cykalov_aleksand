@@ -51,6 +51,4 @@ class ProcessorTest {
         // обратите внимание: важен порядок ключей
         AssertionsForClassTypes.assertThat(serializedOutput).isEqualTo("{\"val1\":3.0,\"val2\":30.0,\"val3\":33.0}");
     }
-
-
 }

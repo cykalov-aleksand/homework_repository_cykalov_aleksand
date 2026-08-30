@@ -1,6 +1,8 @@
 package org.example.dataprocessor.serializer;
 
 import org.example.dataprocessor.FileProcessException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.io.File;
@@ -10,6 +12,7 @@ import java.io.OutputStream;
 import java.util.Map;
 
 public class FileSerializer implements Serializer {
+    private static final Logger logger=LoggerFactory.getLogger(FileSerializer.class);
     private final JsonMapper mapper;
     private final String fileName;
 
@@ -24,13 +27,17 @@ public class FileSerializer implements Serializer {
         File file = new File(fileName);
         File parentDir = file.getParentFile();
         if (parentDir != null && !parentDir.exists() && !parentDir.mkdirs()) {
-            throw new FileProcessException("Не удалось создать директорию: " + parentDir.getAbsolutePath());
+            String msg="Не удалось создать директорию: " + parentDir.getAbsolutePath();
+            logger.error(msg);
+            throw new FileProcessException(msg);
         }
 
         try (OutputStream os = new FileOutputStream(file)) {
             mapper.writeValue(os, data);
         } catch (IOException e) {
-            throw new FileProcessException("Ошибка при записи JSON в файл: " + fileName, e);
+            String msg="Ошибка при записи JSON в файл: " + fileName;
+            logger.error(msg,e);
+            throw new FileProcessException(msg, e);
         }
     }
 }
