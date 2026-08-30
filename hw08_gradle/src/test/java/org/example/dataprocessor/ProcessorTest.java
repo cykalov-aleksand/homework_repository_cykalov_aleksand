@@ -1,5 +1,7 @@
 package org.example.dataprocessor;
 
+
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 class ProcessorTest {
 
@@ -42,6 +46,6 @@ class ProcessorTest {
 
         var serializedOutput = Files.readString(Paths.get(fullOutputFilePath));
         // обратите внимание: важен порядок ключей
-        assertThat(serializedOutput).isEqualTo("{\"val1\":3.0,\"val2\":30.0,\"val3\":33.0}");
+        AssertionsForClassTypes.assertThat(serializedOutput).isEqualTo("{\"val1\":3.0,\"val2\":30.0,\"val3\":33.0}");
     }
 }
