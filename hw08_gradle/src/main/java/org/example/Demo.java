@@ -1,4 +1,5 @@
 package org.example;
+
 import org.example.dataprocessor.processor.ProcessorAggregator;
 import org.example.dataprocessor.serializer.FileSerializer;
 import org.example.model.Measurement;
@@ -6,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tools.jackson.databind.SerializationFeature;
 import tools.jackson.databind.json.JsonMapper;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,13 +15,13 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
-public class Main {
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+public class Demo {
+    private static final Logger logger = LoggerFactory.getLogger(Demo.class);
 
     public static void main(String[] args) {
         try {
-           // Пути к файлам
-            Path dataDir = Paths.get("hw08_gradle/data");
+            // Пути к файлам
+            Path dataDir = Paths.get("hw08_gradle/demo");
             Path inputPath = dataDir.resolve("input-test.json");
             Path outputPath = dataDir.resolve("output-test.json");
             Files.createDirectories(dataDir);
@@ -43,6 +45,7 @@ public class Main {
             logger.error("Ошибка при работе с файлами: {}", e.getMessage());
         }
     }
+
     private static List<Measurement> createTestMeasurements() {
         return List.of(
                 new Measurement("val1", 10.0),
