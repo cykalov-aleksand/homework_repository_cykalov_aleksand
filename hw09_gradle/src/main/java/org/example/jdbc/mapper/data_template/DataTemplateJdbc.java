@@ -1,6 +1,8 @@
-package org.example.jdbc.mapper;
+package org.example.jdbc.mapper.data_template;
 
 import org.example.core.repository.executor.DbExecutor;
+import org.example.jdbc.mapper.entity_class.EntityClassMetaData;
+import org.example.jdbc.mapper.entity_sql.EntitySQLMetaData;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

@@ -1,4 +1,4 @@
-package org.example.jdbc.mapper;
+package org.example.jdbc.mapper.data_template;
 
 import java.sql.Connection;
 import java.util.List;

@@ -2,7 +2,7 @@ package org.example.crm.service.client;
 
 import org.example.core.sessionmanager.TransactionRunner;
 import org.example.crm.model.Client;
-import org.example.jdbc.mapper.DataTemplate;
+import org.example.jdbc.mapper.data_template.DataTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package org.example.jdbc.mapper;
+package org.example.jdbc.mapper.entity_class;
 
 
 import java.lang.reflect.Constructor;

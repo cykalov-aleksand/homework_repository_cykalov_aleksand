@@ -1,4 +1,6 @@
-package org.example.jdbc.mapper;
+package org.example.jdbc.mapper.entity_sql;
+
+import org.example.jdbc.mapper.entity_class.EntityClassMetaData;
 
 import java.lang.reflect.Field;
 import java.util.stream.Collectors;
