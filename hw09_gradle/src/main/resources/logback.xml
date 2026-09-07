@@ -1,0 +1,15 @@
+<configuration>
+    <property resource="logback.properties" />
+    <property name="effective.level" value="${root.level:-OFF}" />
+ <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %highlight(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <root level="${effective.level}">
+        <appender-ref ref="CONSOLE" />
+    </root>
+    <logger name="org.example" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+</configuration>
