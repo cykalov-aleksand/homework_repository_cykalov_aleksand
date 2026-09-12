@@ -36,8 +36,10 @@ public class TransactionRunnerJdbc implements TransactionRunner {
     private <T> T wrapException(Callable<T> action) {
         try {
             return action.call();
+        } catch (DataBaseOperationException ex) {
+            throw ex; // ⚠️ Не оборачиваем повторно!
         } catch (Exception ex) {
             throw new DataBaseOperationException("exception", ex);
         }
-    }
+}
 }

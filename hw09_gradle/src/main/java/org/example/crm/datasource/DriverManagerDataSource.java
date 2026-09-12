@@ -24,17 +24,28 @@ public class DriverManagerDataSource implements DataSource {
 
     @Override
     public Connection getConnection(String username, String password) throws SQLException {
-        return dataSourcePool.getConnection(username, password);
+        throw new SQLFeatureNotSupportedException(
+                "getConnection(username, password) не поддерживается, " +
+                        "так как пул использует фиксированные учётные данные. " +
+                        "Используйте getConnection() без параметров."
+        );
     }
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
-        return dataSourcePool.getLogWriter(); // ← Исправлено: делегируем
+        throw new SQLFeatureNotSupportedException(
+                "getLogWriter() не поддерживается, " +
+                        "так как HikariCP использует SLF4J для логирования."
+        );
     }
 
     @Override
     public void setLogWriter(PrintWriter out) throws SQLException {
-        dataSourcePool.setLogWriter(out); // ← Исправлено
+        throw new SQLFeatureNotSupportedException(
+                "setLogWriter(PrintWriter out) не поддерживается, " +
+                        "так как HikariCP использует SLF4J для логирования. " +
+                        "Настройте логи через logback.xml или другой фреймворк."
+        );
     }
 
     @Override
