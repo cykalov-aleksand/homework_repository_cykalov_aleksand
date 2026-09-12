@@ -29,9 +29,18 @@ dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Source: https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testImplementation 'org.assertj:assertj-core:3.27.7'
+    // Source: https://mvnrepository.com/artifact/com.h2database/h2
+    testImplementation 'com.h2database:h2:2.5.250'
+    // Source: https://mvnrepository.com/artifact/org.mockito/mockito-core
+    testImplementation 'org.mockito:mockito-core:5.23.0'
+    // Source: https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.23.0'
 }
 
 
 test {
+        jvmArgs "-javaagent:${classpath.find { it.name.contains('mockito-core') }?.absolutePath}"
     useJUnitPlatform()
 }
