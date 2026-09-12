@@ -1,5 +1,11 @@
 package org.example.demo;
 
+import org.example.core.repository.DataTemplateHibernate;
+import org.example.core.repository.HibernateUtils;
+import org.example.core.sesionmanager.TransactionManagerHibernate;
+import org.example.crm.dbmigrations.MigrationsExecutorFlyway;
+import org.example.crm.model.Client;
+import org.example.crm.service.DbServiceClientImpl;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
