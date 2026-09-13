@@ -1,10 +1,7 @@
 package org.example.crm.model;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.*;
 
@@ -13,6 +10,7 @@ import java.util.*;
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
 @Entity
+@ToString
 @Table(name = "client")
 public class Client implements Cloneable {
 
@@ -96,14 +94,5 @@ public class Client implements Cloneable {
 
         return clone;
     }
-    @Override
-    public String toString() {
-        return "Client{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address=" + address.getId() +  // Выводим только ID, а не весь объект
-                ", phones=" + phones +  // Это допустимо, если Phone не ссылается обратно
-                '}';
     }
-}
 

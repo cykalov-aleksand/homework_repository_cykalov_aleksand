@@ -1,15 +1,13 @@
 package org.example.crm.model;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "address")
 public class Address {
@@ -18,6 +16,7 @@ public class Address {
     @Id
     private Long id;
     private String street;
+    @ToString.Exclude
     @OneToOne(mappedBy = "address")
     private Client client;
 
@@ -30,12 +29,5 @@ public class Address {
         copy.setClient(newOwner);
         return copy;
     }
-       @Override
-    public String toString() {
-        return "Address{" +
-                "id=" + id +
-                ", street='" + street + '\'' +
-                ", client=" + (client != null ? client.getId() : null) +  // Только ID
-                '}';
-    }
+
 }

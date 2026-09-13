@@ -2,10 +2,7 @@ package org.example.crm.model;
 
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Objects;
 
@@ -14,6 +11,7 @@ import java.util.Objects;
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
 @Entity
+@ToString()
 @Table(name = "phone")
 public class Phone {
     @Id
@@ -22,6 +20,7 @@ public class Phone {
     private Long id;
     @ManyToOne
     @JoinColumn(name="client_id", nullable=false)
+    @ToString.Exclude
     private Client client;
     private String number;
 
@@ -34,12 +33,5 @@ public class Phone {
         copy.setClient(newOwner);
         return copy;
     }
-    @Override
-    public String toString() {
-        return "Phone{" +
-                "id=" + id +
-                ", number='" + number + '\'' +
-                ", client=" + (client != null ? client.getId() : null) +  // Только ID клиента
-                '}';
-    }
+
 }
