@@ -4,7 +4,9 @@ import org.example.core.repository.DataTemplateHibernate;
 import org.example.core.repository.HibernateUtils;
 import org.example.core.sesionmanager.TransactionManagerHibernate;
 import org.example.crm.dbmigrations.MigrationsExecutorFlyway;
+import org.example.crm.model.Address;
 import org.example.crm.model.Client;
+import org.example.crm.model.Phone;
 import org.example.crm.service.DBServiceClient;
 import org.example.crm.service.DbServiceClientImpl;
 import org.hibernate.SessionFactory;
@@ -50,7 +52,7 @@ public abstract class AbstractHibernateTest {
         configuration.setProperty("hibernate.connection.username", dbUserName);
         configuration.setProperty("hibernate.connection.password", dbPassword);
 
-        sessionFactory = HibernateUtils.buildSessionFactory(configuration, Client.class);
+        sessionFactory = HibernateUtils.buildSessionFactory(configuration,Client.class, Address.class, Phone.class);
 
         transactionManager = new TransactionManagerHibernate(sessionFactory);
         clientTemplate = new DataTemplateHibernate<>(Client.class);

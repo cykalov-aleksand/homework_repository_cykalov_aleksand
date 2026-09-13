@@ -4,7 +4,9 @@ import org.example.core.repository.DataTemplateHibernate;
 import org.example.core.repository.HibernateUtils;
 import org.example.core.sesionmanager.TransactionManagerHibernate;
 import org.example.crm.dbmigrations.MigrationsExecutorFlyway;
+import org.example.crm.model.Address;
 import org.example.crm.model.Client;
+import org.example.crm.model.Phone;
 import org.example.crm.service.DbServiceClientImpl;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -25,7 +27,7 @@ public class DbServiceDemo {
 
         new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
 
-        var sessionFactory = HibernateUtils.buildSessionFactory(configuration, Client.class);
+        var sessionFactory = HibernateUtils.buildSessionFactory( configuration, Client.class, Address.class, Phone.class );
 
         var transactionManager = new TransactionManagerHibernate(sessionFactory);
         ///

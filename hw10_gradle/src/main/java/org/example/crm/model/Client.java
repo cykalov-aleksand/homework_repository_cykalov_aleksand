@@ -1,15 +1,17 @@
 package org.example.crm.model;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "client")
 public class Client implements Cloneable {
@@ -22,6 +24,12 @@ public class Client implements Cloneable {
 
     @Column(name = "name")
     private String name;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id", referencedColumnName = "id")
+    private Address address;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
+    @OrderBy("number")
+    List<Phone> phones=new ArrayList<>();
 
     public Client(String name) {
         this.id = null;
@@ -34,18 +42,68 @@ public class Client implements Cloneable {
     }
 
     public Client(Long id, String name, Address address, List<Phone> phones) {
-        throw new UnsupportedOperationException();
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phones = new ArrayList<>();
+        if (phones != null) {
+            phones.forEach(this::addPhone);
+        }
     }
-
+    public void addPhone(Phone phone) {
+        if (phones == null) {
+            phones = new ArrayList<>();
+        }
+        phones.add(phone);
+        phone.setClient(this);
+    }
+    public void setAddress(Address address) {
+        this.address = address;
+        if (address != null) {
+            address.setClient(this);
+        }
+    }
+    public void removePhone(Phone phone) {
+        phones.remove(phone);
+        phone.setClient(null);
+    }
     @Override
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
-        return new Client(this.id, this.name);
-    }
+        Client clone = new Client(this.id, this.name);
 
+        // Копируем address
+        if (this.address != null) {
+            Address addressCopy = new Address(this.address.getId(), this.address.getStreet());
+            addressCopy.setClient(clone);
+            clone.address = addressCopy;
+        }
+
+        // Копируем phones
+        if (this.phones != null) {
+            clone.phones = new ArrayList<>();
+            for (Phone phone : this.phones) {
+                Phone phoneCopy = new Phone(phone.getId(), phone.getNumber());
+                phoneCopy.setClient(clone);
+                clone.phones.add(phoneCopy);
+            }
+        }
+
+        // Гарантируем, что address.client установлен
+        if (clone.address != null) {
+            clone.address.setClient(clone);
+        }
+
+        return clone;
+    }
     @Override
     public String toString() {
-        return "Client{" + "id=" + id + ", name='" + name + '\'' + '}';
+        return "Client{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address=" + address.getId() +  // Выводим только ID, а не весь объект
+                ", phones=" + phones +  // Это допустимо, если Phone не ссылается обратно
+                '}';
     }
 }
 

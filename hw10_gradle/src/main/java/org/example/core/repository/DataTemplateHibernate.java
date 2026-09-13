@@ -1,5 +1,6 @@
 package org.example.core.repository;
 
+import org.example.crm.model.Client;
 import org.hibernate.Session;
 
 import java.util.List;
@@ -37,6 +38,15 @@ public class DataTemplateHibernate<T> implements DataTemplate<T> {
 
     @Override
     public T insert(Session session, T object) {
+        if (object instanceof Client client) {
+            // Устанавливаем обратные связи вручную
+            if (client.getAddress() != null) {
+                client.getAddress().setClient(client);
+            }
+            if (client.getPhones() != null) {
+                client.getPhones().forEach(phone -> phone.setClient(client));
+            }
+        }
         session.persist(object);
         return object;
     }
