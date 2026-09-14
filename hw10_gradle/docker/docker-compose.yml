@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   db:
-    image: postgres:13
+    image: postgres:12
     container_name: pg-docker
     environment:
       POSTGRES_USER: usr
@@ -11,7 +11,7 @@ services:
     ports:
       - "5430:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U usr -d demoDB"]
       interval: 5s

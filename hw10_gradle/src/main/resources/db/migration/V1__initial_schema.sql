@@ -1,12 +1,3 @@
--- Для @GeneratedValue(strategy = GenerationType.IDENTITY)
-/*
-create table client
-(
-    id   bigserial not null primary key,
-    name varchar(50)
-);
-
- */
 
 -- 1. Address
 CREATE SEQUENCE address_seq START WITH 1 INCREMENT BY 1;

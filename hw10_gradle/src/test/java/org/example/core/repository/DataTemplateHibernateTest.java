@@ -5,7 +5,6 @@ import org.example.base.AbstractHibernateTest;
 import org.example.crm.model.Address;
 import org.example.crm.model.Client;
 import org.example.crm.model.Phone;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

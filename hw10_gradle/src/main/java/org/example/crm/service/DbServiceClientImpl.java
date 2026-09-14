@@ -1,6 +1,5 @@
 package org.example.crm.service;
 
-
 import org.example.core.repository.DataTemplate;
 import org.example.core.sesionmanager.TransactionManager;
 import org.example.crm.model.Client;
@@ -25,22 +24,21 @@ public class DbServiceClientImpl implements DBServiceClient {
     @Override
     public Client saveClient(Client client) {
         return transactionManager.doInTransaction(session -> {
+            if (client.getPhones() != null) {
+                client.getPhones().forEach(phone -> phone.setClient(client));
+            }
             var savedClient = client.getId() == null
                     ? clientDataTemplate.insert(session, client)
                     : clientDataTemplate.update(session, client);
-
-            // Инициализируем связи
             Hibernate.initialize(savedClient.getPhones());
             if (savedClient.getAddress() != null) {
                 Hibernate.initialize(savedClient.getAddress());
             }
-
             log.info("saved client: {}", savedClient);
-
-            // Возвращаем клон без прокси
             return savedClient.clone();
         });
     }
+
     @Override
     public Optional<Client> getClient(long id) {
         return transactionManager.doInReadOnlyTransaction(session -> {
@@ -57,6 +55,6 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     @Override
     public List<Client> findAll() {
-        return transactionManager.doInReadOnlyTransaction(session -> clientDataTemplate.findAll(session));
+        return transactionManager.doInReadOnlyTransaction(clientDataTemplate::findAll);
     }
 }

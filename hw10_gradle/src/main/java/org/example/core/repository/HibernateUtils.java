@@ -11,7 +11,8 @@ import java.util.Arrays;
 
 public final class HibernateUtils {
 
-    private HibernateUtils() {}
+    private HibernateUtils() {
+    }
 
     public static SessionFactory buildSessionFactory(Configuration configuration, Class<?>... annotatedClasses) {
         MetadataSources metadataSources = new MetadataSources(createServiceRegistry(configuration));

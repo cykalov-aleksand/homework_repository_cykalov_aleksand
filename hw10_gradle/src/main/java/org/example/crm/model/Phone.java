@@ -19,19 +19,14 @@ public class Phone {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "phone_gen")
     private Long id;
     @ManyToOne
-    @JoinColumn(name="client_id", nullable=false)
+    @JoinColumn(name = "client_id", nullable = false)
     @ToString.Exclude
     private Client client;
     private String number;
 
     public Phone(Long id, String number) {
-        this.id=id;
-        this.number=number;
-           }
-    public Phone clone(Client newOwner) {
-        Phone copy = new Phone(this.id, this.number);
-        copy.setClient(newOwner);
-        return copy;
+        this.id = id;
+        this.number = number;
     }
 
 }

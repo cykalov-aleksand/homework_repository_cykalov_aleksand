@@ -16,18 +16,10 @@ public class Address {
     @Id
     private Long id;
     private String street;
-    @ToString.Exclude
-    @OneToOne(mappedBy = "address")
-    private Client client;
 
     public Address(Long id, String street) {
-        this.id=id;
-        this.street=street;
-    }
-    public Address clone(Client newOwner) {
-        Address copy = new Address(this.id, this.street);
-        copy.setClient(newOwner);
-        return copy;
+        this.id = id;
+        this.street = street;
     }
 
 }
