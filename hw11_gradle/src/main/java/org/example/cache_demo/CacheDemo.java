@@ -73,10 +73,9 @@ public class CacheDemo {
                 label, iterations, elapsed / 1_000_000, elapsed / iterations);
     }
 
-    /**
-     * Показывает, что WeakHashMap освобождает записи,
-     * когда на ключи нет сильных ссылок и GC собирает мусор.
-     */
+    // Показывает, что WeakHashMap освобождает записи,
+    // когда на ключи нет сильных ссылок и GC собирает мусор.
+
     private static void testWeakHashMapEviction() {
         var cache = new MyCache<Long, byte[]>();
 
