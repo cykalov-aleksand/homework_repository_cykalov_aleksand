@@ -9,7 +9,7 @@ import org.example.crm.dbmigrations.MigrationsExecutorFlyway;
 import org.example.crm.model.Address;
 import org.example.crm.model.Client;
 import org.example.crm.model.Phone;
-import org.example.service.DbServiceClientImpl;
+import org.example.service.DbServiceClientCache;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,11 +35,11 @@ public class CacheDemo {
 
         // === Демонстрация с кэшем ===
         HwCache<Long, Client> cache = new MyCache<>();
-        var dbServiceWithCache = new DbServiceClientImpl(transactionManager, clientTemplate, cache);
+        var dbServiceWithCache = new DbServiceClientCache(transactionManager, clientTemplate, cache);
 
         // === Демонстрация без кэша (пустой кэш, который ничего не хранит) ===
         HwCache<Long, Client> noOpCache = new NoOpCache<>();
-        var dbServiceNoCache = new DbServiceClientImpl(transactionManager, clientTemplate, noOpCache);
+        var dbServiceNoCache = new DbServiceClientCache(transactionManager, clientTemplate, noOpCache);
 
         // Создаём тестового клиента
         var savedClient = dbServiceWithCache.saveClient(
@@ -58,7 +58,7 @@ public class CacheDemo {
     }
 
     private static void benchmark(String label,
-                                  DbServiceClientImpl dbService,
+                                  DbServiceClientCache dbService,
                                   long clientId,
                                   int iterations) {
         // Прогрев (1-й вызов всегда идёт в БД)

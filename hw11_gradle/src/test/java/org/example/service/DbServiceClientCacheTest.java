@@ -90,13 +90,9 @@ class DbServiceClientCacheTest extends AbstractHibernateTest {
         // Удаляем из кэша
         cache.remove(id);
         sessionFactory.getStatistics().clear();
-
-        // when
         var loaded = dbServiceClient.getClient(id);
-
-        // then — должен пойти в БД
         assertThat(loaded).isPresent();
-        assertThat(getUsageStatistics().getFetchCount())
+        assertThat(getUsageStatistics().getLoadCount())
                 .as("После удаления из кэша getClient должен обратиться к БД")
                 .isGreaterThan(0);
     }

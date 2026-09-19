@@ -10,7 +10,7 @@ import org.example.crm.model.Address;
 import org.example.crm.model.Client;
 import org.example.crm.model.Phone;
 import org.example.crm.service.DBServiceClient;
-import org.example.service.DbServiceClientImpl;
+import org.example.service.DbServiceClientCache;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.stat.EntityStatistics;
@@ -64,7 +64,7 @@ public abstract class AbstractHibernateTest {
         transactionManager = new TransactionManagerHibernate(sessionFactory);
         clientTemplate = new DataTemplateHibernate<>(Client.class);
         cache = new MyCache<>();
-        dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate, cache);
+        dbServiceClient = new DbServiceClientCache(transactionManager, clientTemplate, cache);
     }
 
     protected EntityStatistics getUsageStatistics() {

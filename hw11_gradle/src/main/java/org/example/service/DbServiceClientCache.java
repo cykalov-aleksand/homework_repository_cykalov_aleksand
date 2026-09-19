@@ -12,16 +12,16 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
-public class DbServiceClientImpl implements DBServiceClient {
-    private static final Logger log = LoggerFactory.getLogger(DbServiceClientImpl.class);
+public class DbServiceClientCache implements DBServiceClient {
+    private static final Logger log = LoggerFactory.getLogger(DbServiceClientCache.class);
 
     private final DataTemplate<Client> clientDataTemplate;
     private final TransactionManager transactionManager;
     private final HwCache<Long, Client> cache;
 
-    public DbServiceClientImpl(TransactionManager transactionManager,
-                               DataTemplate<Client> clientDataTemplate,
-                               HwCache<Long, Client> cache) {
+    public DbServiceClientCache(TransactionManager transactionManager,
+                                DataTemplate<Client> clientDataTemplate,
+                                HwCache<Long, Client> cache) {
         this.transactionManager = transactionManager;
         this.clientDataTemplate = clientDataTemplate;
         this.cache = cache;

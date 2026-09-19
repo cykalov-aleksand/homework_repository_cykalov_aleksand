@@ -10,7 +10,7 @@ import org.example.crm.model.Address;
 import org.example.crm.model.Client;
 import org.example.crm.model.Phone;
 
-import org.example.service.DbServiceClientImpl;
+import org.example.service.DbServiceClientCache;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +38,7 @@ public class DbServiceDemo {
         ///
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
         ///
-        var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate,cache);
+        var dbServiceClient = new DbServiceClientCache(transactionManager, clientTemplate,cache);
         dbServiceClient.saveClient(new Client(null,"dbServiceFirst",new Address(null, "AnyStreet"), List.of(new Phone(null, "13-555-22"),
                 new Phone(null, "14-666-333"))));
 
