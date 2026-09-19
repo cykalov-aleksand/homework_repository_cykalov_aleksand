@@ -30,11 +30,8 @@ class DbServiceClientCacheTest extends AbstractHibernateTest {
 
         // when — первый вызов getClient: должен пойти в БД (кэш пуст после saveClient? Нет, write-through положил)
         // На самом деле saveClient уже положил в кэш, так что первый getClient тоже возьмёт из кэша.
-        var firstLoad = dbServiceClient.getClient(id);
-
-        // then — первый вызов
-        assertThat(firstLoad).isPresent();
-        assertThat(firstLoad.get().getName()).isEqualTo("CacheTestClient");
+        var firstLoad = dbServiceClient.getClient(id).orElseThrow(() -> new AssertionError("Клиент не найден"));
+        assertThat(firstLoad.getName()).isEqualTo("CacheTestClient");
 
         // Проверяем, что Hibernate НЕ загружал сущность из БД (всё из кэша)
         EntityStatistics stats = getUsageStatistics();
@@ -43,16 +40,14 @@ class DbServiceClientCacheTest extends AbstractHibernateTest {
                 .isEqualTo(0);
 
         // when — второй вызов getClient: точно из кэша
-        var secondLoad = dbServiceClient.getClient(id);
-
+        var secondLoad = dbServiceClient.getClient(id).orElseThrow(() -> new AssertionError("Клиент не найден"));
         // then
-        assertThat(secondLoad).isPresent();
-        assertThat(stats.getFetchCount())
+             assertThat(stats.getFetchCount())
                 .as("Второй getClient тоже не должен обращаться к БД")
                 .isEqualTo(0);
 
         // Проверяем, что возвращаемые объекты независимы (клоны)
-        assertThat(secondLoad.get()).isNotSameAs(firstLoad.get());
+        assertThat(secondLoad).isNotSameAs(firstLoad);
     }
 
     @Test
@@ -72,10 +67,9 @@ class DbServiceClientCacheTest extends AbstractHibernateTest {
         dbServiceClient.saveClient(toUpdate);
 
         // then — getClient должен вернуть обновлённое имя из кэша
-        var loaded = dbServiceClient.getClient(id);
-        assertThat(loaded).isPresent();
-        assertThat(loaded.get().getName()).isEqualTo("UpdatedName");
-
+        var loadedClient = dbServiceClient.getClient(id)
+                .orElseThrow(() -> new AssertionError("Клиент не найден"));
+        assertThat(loadedClient.getName()).isEqualTo("UpdatedName");
         // И при этом не было обращений к БД
         assertThat(getUsageStatistics().getFetchCount())
                 .as("getClient после saveClient не должен обращаться к БД")
