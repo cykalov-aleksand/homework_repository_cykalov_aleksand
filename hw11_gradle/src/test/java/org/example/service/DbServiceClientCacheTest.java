@@ -17,7 +17,7 @@ class DbServiceClientCacheTest extends AbstractHibernateTest {
     @Test
     @DisplayName("повторный getClient должен брать данные из кэша, а не из БД")
     void shouldGetClientFromCacheOnSecondCall() {
-               var client = new Client(
+        var client = new Client(
                 null, "CacheTestClient",
                 new Address(null, "TestStreet"),
                 List.of(new Phone(null, "123-456")));
@@ -42,7 +42,7 @@ class DbServiceClientCacheTest extends AbstractHibernateTest {
         // when — второй вызов getClient: точно из кэша
         var secondLoad = dbServiceClient.getClient(id).orElseThrow(() -> new AssertionError("Клиент не найден"));
         // then
-             assertThat(stats.getFetchCount())
+        assertThat(stats.getFetchCount())
                 .as("Второй getClient тоже не должен обращаться к БД")
                 .isEqualTo(0);
 

@@ -32,24 +32,24 @@ public class DbServiceDemo {
 
         new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
 
-        var sessionFactory = HibernateUtils.buildSessionFactory( configuration, Client.class, Address.class, Phone.class );
+        var sessionFactory = HibernateUtils.buildSessionFactory(configuration, Client.class, Address.class, Phone.class);
 
         var transactionManager = new TransactionManagerHibernate(sessionFactory);
         ///
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
         ///
-        var dbServiceClient = new DbServiceClientCache(transactionManager, clientTemplate,cache);
-        dbServiceClient.saveClient(new Client(null,"dbServiceFirst",new Address(null, "AnyStreet"), List.of(new Phone(null, "13-555-22"),
+        var dbServiceClient = new DbServiceClientCache(transactionManager, clientTemplate, cache);
+        dbServiceClient.saveClient(new Client(null, "dbServiceFirst", new Address(null, "AnyStreet"), List.of(new Phone(null, "13-555-22"),
                 new Phone(null, "14-666-333"))));
 
-        var clientSecond = dbServiceClient.saveClient(new Client(null,"dbServiceSecond",new Address(null, "Московская область"), List.of(new Phone(null, "13-555-22"),
+        var clientSecond = dbServiceClient.saveClient(new Client(null, "dbServiceSecond", new Address(null, "Московская область"), List.of(new Phone(null, "13-555-22"),
                 new Phone(null, "14-666-444"))));
         var clientSecondSelected = dbServiceClient
                 .getClient(clientSecond.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
         log.info("clientSecondSelected:{}", clientSecondSelected);
         //
-        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated",new Address(null, "Московская область"), List.of(new Phone(null, "13-555-22"),
+        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated", new Address(null, "Московская область"), List.of(new Phone(null, "13-555-22"),
                 new Phone(null, "00-000-000"))));
         var clientUpdated = dbServiceClient
                 .getClient(clientSecondSelected.getId())
