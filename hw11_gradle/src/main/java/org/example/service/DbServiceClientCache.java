@@ -29,7 +29,7 @@ public class DbServiceClientCache implements DBServiceClient {
 
     @Override
     public Client saveClient(Client client) {
-        return transactionManager.doInTransaction(session -> {
+        Client realSavedClient= transactionManager.doInTransaction(session -> {
             if (client.getPhones() != null) {
                 client.getPhones().forEach(phone -> phone.setClient(client));
             }
@@ -41,12 +41,11 @@ public class DbServiceClientCache implements DBServiceClient {
             if (savedClient.getAddress() != null) {
                 Hibernate.initialize(savedClient.getAddress());
             }
-
-            cache.put(savedClient.getId(), savedClient.clone());
-
             log.info("Сохраненный client: {}", savedClient);
             return savedClient.clone();
         });
+        cache.put(realSavedClient.getId(), realSavedClient);
+        return realSavedClient;
     }
 
     @Override
