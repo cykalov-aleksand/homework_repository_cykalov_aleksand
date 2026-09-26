@@ -4,8 +4,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 class MyCacheTest {
@@ -119,5 +123,47 @@ class MyCacheTest {
 
         assertThat(firstLog).containsExactly("put");
         assertThat(secondLog).containsExactly("put");
+    }
+    @Test
+    @DisplayName("concurrent access: put/get/remove должны работать без ошибок при корректной синхронизации")
+    void testConcurrentPutGetRemove() throws InterruptedException {
+        var cache = new MyCache<String, Integer>();
+        var errors = new AtomicInteger(0);
+
+        Runnable worker = () -> {
+            // Уникальный префикс для каждого потока — чтобы ключи не пересекались
+            String prefix = "k" + Thread.currentThread().getId() + "_";
+            var strongValues = new Integer[10];
+
+            for (int i = 0; i < 1000; i++) {
+                String key = prefix + (i % 10);
+                Integer value = i;
+
+                int idx = i % 10;
+                strongValues[idx] = value;
+
+                cache.put(key, value);
+                Integer v = cache.get(key);
+
+                if (v == null || !v.equals(value)) {
+                    errors.incrementAndGet();
+                }
+
+                if (i % 300 == 0) {
+                    cache.remove(key);
+                }
+            }
+        };
+
+        List<Thread> threads = IntStream.range(0, 8)
+                .mapToObj(i -> new Thread(worker))
+                .toList();
+
+        threads.forEach(Thread::start);
+        for (Thread t : threads) {
+            t.join();
+        }
+
+        assertEquals(0, errors.get(), "Не должно быть ошибок при конкурентном доступе");
     }
 }
