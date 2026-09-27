@@ -30,7 +30,7 @@ public class DbServiceClientCache implements DBServiceClient {
 
     @Override
     public Client saveClient(Client client) {
-        Client realSavedClient= transactionManager.doInTransaction(session -> {
+        Client realSavedClient = transactionManager.doInTransaction(session -> {
             if (client.getPhones() != null) {
                 client.getPhones().forEach(phone -> phone.setClient(client));
             }

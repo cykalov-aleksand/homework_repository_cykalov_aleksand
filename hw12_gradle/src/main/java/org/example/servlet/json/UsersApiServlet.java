@@ -1,6 +1,7 @@
 package org.example.servlet.json;
 
 import com.google.gson.Gson;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ public class UsersApiServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         List<Client> users = dbServiceClientCache.findAll();
         if (users != null) {
             for (Client user : users) {
@@ -30,7 +31,7 @@ public class UsersApiServlet extends HttpServlet {
                 }
             }
         }
-       response.setContentType("application/json;charset=UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
         ServletOutputStream out = response.getOutputStream();
         out.print(gson.toJson(users));
     }

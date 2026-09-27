@@ -6,7 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class FileSystemHelper {
-    private FileSystemHelper() {}
+    private FileSystemHelper() {
+    }
 
     public static String localFileNameOrResourceNameToFullPath(String fileOrResourceName) {
         String path = null;

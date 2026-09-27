@@ -61,7 +61,7 @@ public class SaveUserNewClientApiServlet extends HttpServlet {
             resp.getWriter().write(responseJson);
 
         } catch (Exception e) {
-           sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Ошибка при создании: " + e.getMessage());
+            sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Ошибка при создании: " + e.getMessage());
         }
     }
 

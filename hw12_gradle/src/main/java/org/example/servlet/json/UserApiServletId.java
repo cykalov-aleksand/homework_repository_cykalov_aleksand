@@ -1,6 +1,7 @@
 package org.example.servlet.json;
 
 import com.google.gson.Gson;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,7 +23,7 @@ public class UserApiServletId extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Client user = dbServiceClientCache.getClient(extractIdFromRequest(request)).orElse(null);
 
         // Разрываем циклическую ссылку для Gson

@@ -1,5 +1,6 @@
 package org.example.servlet.html;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ public class UserServletId extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Object> paramsMap = new HashMap<>();
         long id = extractIdFromRequest(req);
         Client client = dbServiceClientCache.getClient(id).orElse(null);
@@ -32,6 +33,7 @@ public class UserServletId extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
     }
+
     private long extractIdFromRequest(HttpServletRequest request) {
         String[] path = request.getPathInfo().split("/");
         try {
