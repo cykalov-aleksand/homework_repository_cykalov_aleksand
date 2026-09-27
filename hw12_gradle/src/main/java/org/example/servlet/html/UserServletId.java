@@ -26,16 +26,9 @@ public class UserServletId extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
-
         long id = extractIdFromRequest(req);
-        System.out.println(">>> PathInfo: " + req.getPathInfo());
-        System.out.println(">>> Extracted ID: " + id);
-
         Client client = dbServiceClientCache.getClient(id).orElse(null);
-        System.out.println(">>> Client from DB: " + client);
-
         paramsMap.put("clients", client);
-
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().println(templateProcessor.getPage(USERS_PAGE_TEMPLATE, paramsMap));
     }

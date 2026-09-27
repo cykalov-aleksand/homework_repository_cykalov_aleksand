@@ -29,7 +29,6 @@ public class SaveUserNewClientApiServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            // 1. Парсим JSON из тела запроса через Gson
             ClientCreateRequest request = gson.fromJson(req.getReader(), ClientCreateRequest.class);
 
             if (request.getName() == null || request.getName().isBlank()) {
@@ -37,8 +36,7 @@ public class SaveUserNewClientApiServlet extends HttpServlet {
                 return;
             }
 
-            // 2. Собираем сущности вручную (как ты делал в тесте)
-            Address address = new Address(null, request.getStreet()); // ID = null, база сама даст
+            Address address = new Address(null, request.getStreet()); // ID = null
 
             List<Phone> phones = new ArrayList<>();
             if (request.getPhoneNumbers() != null) {
@@ -50,16 +48,12 @@ public class SaveUserNewClientApiServlet extends HttpServlet {
             Client client = new Client(request.getName());
             client.setAddress(address);
 
-            // Добавляем телефоны через addPhone, чтобы связать Client <-> Phone
             for (Phone p : phones) {
                 client.addPhone(p);
             }
-
-            // 3. Вызываем твой сервис.
-            // Внутри saveClient должна быть транзакция и запись в MyCache ПОСЛЕ коммита.
             Long savedId = dbServiceClientCache.saveClient(client).getId();
 
-            // 4. Возвращаем JSON с результатом
+            // Возвращаем JSON с результатом
             resp.setStatus(HttpServletResponse.SC_CREATED);
             resp.setContentType("application/json;charset=UTF-8");
 
@@ -67,8 +61,7 @@ public class SaveUserNewClientApiServlet extends HttpServlet {
             resp.getWriter().write(responseJson);
 
         } catch (Exception e) {
-            e.printStackTrace();
-            sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Ошибка при создании: " + e.getMessage());
+           sendError(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Ошибка при создании: " + e.getMessage());
         }
     }
 

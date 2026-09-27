@@ -22,8 +22,6 @@ import java.util.EnumSet;
 public class UsersWebServerSimple implements UsersWebServer {
         private static final String START_PAGE_NAME = "index.html";
         private static final String COMMON_RESOURCES_DIR = "static";
-
-       // private final UserDao userDao;
         private final Gson gson;
         protected final TemplateProcessor templateProcessor;
         private final Server server;
@@ -61,13 +59,13 @@ public class UsersWebServerSimple implements UsersWebServer {
 
             Handler.Sequence sequence = new Handler.Sequence();
             sequence.addHandler(resourceHandler);
-            sequence.addHandler(applySecurity(servletContextHandler, "/users", "/api/user/*"));
+            sequence.addHandler(applySecurity(servletContextHandler));
 
             server.setHandler(sequence);
         }
 
-        @SuppressWarnings({"squid:S1172"})
-        protected Handler applySecurity(ServletContextHandler servletContextHandler, String... paths) {
+    @SuppressWarnings({"squid:S1172", "unused"})
+        protected Handler applySecurity(ServletContextHandler servletContextHandler) {
             return servletContextHandler;
         }
 
@@ -100,19 +98,5 @@ public class UsersWebServerSimple implements UsersWebServer {
             servletContextHandler.addFilter(new FilterHolder(new AuthFilter()), "/*", EnumSet.of(DispatcherType.REQUEST));
 
             return servletContextHandler;
-
-
-
-            /*
-            ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            servletContextHandler.addServlet(new ServletHolder(new UsersServlet(templateProcessor, dbServiceClientCache)), "/users");
-            servletContextHandler.addServlet(new ServletHolder(new UserServletId(templateProcessor, dbServiceClientCache)), "/user/*");
-            servletContextHandler.addServlet(new ServletHolder(new CreateClientPageServlet()),"/save");
-            servletContextHandler.addServlet(new ServletHolder(new SaveUserNewClientApiServlet(dbServiceClientCache, gson)), "/api/save");
-            servletContextHandler.addServlet(new ServletHolder(new UsersApiServlet(dbServiceClientCache, gson)), "/api/users");
-            servletContextHandler.addServlet(new ServletHolder(new UserApiServletId(dbServiceClientCache, gson)), "/api/user/*");
-            return servletContextHandler;
-
-             */
         }
 }

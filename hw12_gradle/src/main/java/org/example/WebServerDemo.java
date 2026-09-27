@@ -35,16 +35,11 @@ public class WebServerDemo {
             var sessionFactory = HibernateUtils.buildSessionFactory(configuration, Client.class, Address.class, Phone.class);
 
             var transactionManager = new TransactionManagerHibernate(sessionFactory);
-            ///
             var clientTemplate = new DataTemplateHibernate<>(Client.class);
-            ///
             var dbServiceClient = new DbServiceClientCache(transactionManager, clientTemplate, cache);
-          //  UserDao userDao = new InMemoryUserDao();
             Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
             TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
-
             UsersWebServer usersWebServer = new UsersWebServerSimple(WEB_SERVER_PORT, dbServiceClient, gson, templateProcessor);
-
             usersWebServer.start();
             usersWebServer.join();
         }

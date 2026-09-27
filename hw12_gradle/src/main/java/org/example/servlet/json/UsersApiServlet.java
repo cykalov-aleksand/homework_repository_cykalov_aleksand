@@ -34,5 +34,4 @@ public class UsersApiServlet extends HttpServlet {
         ServletOutputStream out = response.getOutputStream();
         out.print(gson.toJson(users));
     }
-
 }

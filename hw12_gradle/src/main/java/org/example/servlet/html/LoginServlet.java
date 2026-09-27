@@ -33,13 +33,10 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         if (ADMIN_LOGIN.equals(login) && ADMIN_PASSWORD.equals(password)) {
-            // Сохраняем в сессию признак аутентификации
-            req.getSession().setAttribute("authenticated", true);
-            // Редирект на админскую страницу
+           req.getSession().setAttribute("authenticated", true);
             resp.sendRedirect("/admin");
         } else {
-            // Возвращаем страницу логина с ошибкой
-            resp.setContentType("text/html;charset=UTF-8");
+             resp.setContentType("text/html;charset=UTF-8");
             var params = new HashMap<String, Object>();
             params.put("error", true);
             resp.getWriter().println(templateProcessor.getPage(LOGIN_PAGE, params));
