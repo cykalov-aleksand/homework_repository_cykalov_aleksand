@@ -1,5 +1,4 @@
-package org.example.servlet;
-
+package org.example.servlet.html.login;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package org.example.servlet.html;
+package org.example.servlet.html.login;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
