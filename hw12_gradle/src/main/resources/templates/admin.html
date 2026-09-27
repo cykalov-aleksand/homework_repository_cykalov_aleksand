@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CRM Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        h2 { margin-top: 30px; }
+        label { display: block; margin-top: 12px; font-weight: bold; }
+        input, textarea { width: 320px; padding: 6px; margin-top: 4px; }
+        button { margin-top: 16px; padding: 8px 16px; background: #007bff; color: white; border: none; cursor: pointer; }
+        .result { margin-top: 20px; padding: 10px; border: 1px solid #ccc; }
+        .error { color: red; }
+        .success { color: green; }
+        table { margin-top: 20px; border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background: #f0f0f0; }
+        .logout { float: right; }
+    </style>
+</head>
+<body>
+<h1>CRM — Админ-панель</h1>
+<a class="logout" href="/logout">Выйти</a>
+
+<h2>Создать клиента</h2>
+<form id="clientForm">
+    <label for="name">Имя клиента (обязательно):</label>
+    <input type="text" id="name" name="name" required placeholder="Ivan Ivanov">
+
+    <label for="street">Улица:</label>
+    <input type="text" id="street" name="street" placeholder="Lenina 1">
+
+    <label for="phones">Телефоны (каждый с новой строки):</label>
+    <textarea id="phones" name="phones" rows="4" placeholder="+79990001122&#10;+79993334455"></textarea>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<div id="result" class="result" style="display:none;"></div>
+
+<h2>Список клиентов</h2>
+<button onclick="loadClients()">Обновить список</button>
+<table id="clientsTable" style="display:none;">
+    <thead>
+    <tr><th>ID</th><th>Имя</th><th>Адрес</th><th>Телефоны</th><th>Карточка</th></tr>
+    </thead>
+    <tbody id="clientsBody"></tbody>
+</table>
+
+<script>
+    // --- Создание клиента ---
+    document.getElementById('clientForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value.trim();
+        const street = document.getElementById('street').value.trim();
+        const phonesRaw = document.getElementById('phones').value.trim();
+        const phoneNumbers = phonesRaw.split(/\r?\n/).map(p => p.trim()).filter(p => p !== '');
+
+        if (!name) { showResult('Ошибка: поле "Имя" обязательно.', false); return; }
+
+        try {
+            const res = await fetch('/api/save', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, street, phoneNumbers })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                showResult('✅ Клиент сохранён! ID: ' + data.id, true);
+                document.getElementById('clientForm').reset();
+                loadClients(); // авто-обновление списка
+            } else {
+                showResult('❌ ' + (data.error || 'Ошибка'), false);
+            }
+        } catch (err) {
+            showResult('❌ Ошибка сети: ' + err.message, false);
+        }
+    });
+
+    // --- Загрузка списка клиентов ---
+    async function loadClients() {
+        try {
+            const res = await fetch('/api/users');
+            const clients = await res.json();
+            const tbody = document.getElementById('clientsBody');
+            tbody.innerHTML = '';
+
+            clients.forEach(c => {
+                const row = document.createElement('tr');
+                const phones = (c.phones || []).map(p => p.number).join(', ');
+                row.innerHTML =
+                    '<td>' + c.id + '</td>' +
+                    '<td>' + c.name + '</td>' +
+                    '<td>' + (c.address ? c.address.street : '') + '</td>' +
+                    '<td>' + phones + '</td>' +
+                    '<td><a href="/user/' + c.id + '">Открыть</a></td>';
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('clientsTable').style.display = 'table';
+        } catch (err) {
+            showResult('❌ Ошибка загрузки списка: ' + err.message, false);
+        }
+    }
+
+    // Автозагрузка при открытии страницы
+    loadClients();
+
+    function showResult(text, isSuccess) {
+        const el = document.getElementById('result');
+        el.style.display = 'block';
+        el.innerHTML = text;
+        el.className = 'result ' + (isSuccess ? 'success' : 'error');
+    }
+</script>
+</body>
+</html>
