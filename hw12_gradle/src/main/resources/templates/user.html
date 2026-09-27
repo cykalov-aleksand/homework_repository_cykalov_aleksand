@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Карточка клиента</title>
+    <style>
+        body { font-family: sans-serif; max-width: 700px; margin: 30px auto; }
+        .card { border: 1px solid #ddd; border-radius: 8px; padding: 24px; }
+        .field { margin-bottom: 12px; }
+        .field-label { font-weight: bold; color: #555; display: inline-block; width: 120px; }
+        .empty-msg { text-align: center; color: #999; font-style: italic; padding: 40px; }
+        ul { margin: 4px 0; padding-left: 20px; }
+    </style>
+</head>
+<body>
+<h1>Карточка клиента</h1>
+
+<#if clients??>
+<div class="card">
+    <div class="field">
+        <span class="field-label">ID:</span> ${clients.id}
+    </div>
+    <div class="field">
+        <span class="field-label">Name:</span> ${clients.name!'No name'}
+    </div>
+
+    <#if clients.address??>
+    <div class="field">
+        <span class="field-label">Address:</span> ${clients.address.street!'N/A'}
+    </div>
+</#if>
+
+<#if clients.phones?has_content>
+<div class="field">
+    <span class="field-label">Phones:</span>
+    <class="field-label">Phones:</span>
+    <ul>
+        <#list clients.phones as phone>
+        <li>${phone.number!'N/A'}</li>
+    </#list>
+    </ul>
+</div>
+</#if>
+</div>
+<#else>
+<p class="empty-msg">Клиент не найден.</p>
+</#if>
+</body>
+</html>
