@@ -30,7 +30,7 @@ public class DbServiceClientCache implements DBServiceClient {
 
     @Override
     public Client saveClient(Client client) {
-        Client realSavedClient = transactionManager.doInTransaction(session -> {
+        Client savedClientInTx = transactionManager.doInTransaction(session -> {
             if (client.getPhones() != null) {
                 client.getPhones().forEach(phone -> phone.setClient(client));
             }
@@ -42,19 +42,25 @@ public class DbServiceClientCache implements DBServiceClient {
             if (savedClient.getAddress() != null) {
                 Hibernate.initialize(savedClient.getAddress());
             }
-            log.info("Сохраненный client: {}", savedClient);
+            log.info("Сохранённый client: {}", savedClient);
+            // Возвращаем клон из транзакции, чтобы снаружи не было ссылки на Hibernate-объект
             return savedClient.clone();
         });
-        cache.put(realSavedClient.getId(), realSavedClient);
-        return realSavedClient;
+
+        // Кладём в кэш свою копию (чтобы кэш был изолирован)
+        Client cacheEntry = savedClientInTx.clone();
+        cache.put(cacheEntry.getId(), cacheEntry);
+
+        // Возвращаем наружу ещё одну копию — тогда любые изменения снаружи не затронут кэш
+        return savedClientInTx.clone();
     }
 
     @Override
     public Optional<Client> getClient(long id) {
-        // Проверка наличия информации в кэше
         Client cached = cache.get(id);
         if (cached != null) {
-            log.debug("Информация из кэша client  по id={}", id);
+            log.debug("Информация из кэша client по id={}", id);
+            // Всегда возвращаем отдельную копию: кэш остаётся неприкосновенным
             return Optional.of(cached.clone());
         }
 
@@ -66,9 +72,11 @@ public class DbServiceClientCache implements DBServiceClient {
                 if (client.getAddress() != null) {
                     Hibernate.initialize(client.getAddress());
                 }
-                Client cloned = client.clone();
-                cache.put(id, cloned);
-                return Optional.of(cloned);
+                // Сначала делаем копию для кэша
+                Client cacheEntry = client.clone();
+                cache.put(id, cacheEntry);
+                // Потом возвращаем наружу отдельную копию
+                return Optional.of(client.clone());
             } else {
                 return Optional.empty();
             }
@@ -77,6 +85,15 @@ public class DbServiceClientCache implements DBServiceClient {
 
     @Override
     public List<Client> findAll() {
-        return transactionManager.doInReadOnlyTransaction(clientDataTemplate::findAll);
+        return transactionManager.doInReadOnlyTransaction(session -> {
+            var clients = clientDataTemplate.findAll(session);
+            return clients.stream().map(client -> {
+                Hibernate.initialize(client.getPhones());
+                if (client.getAddress() != null) {
+                    Hibernate.initialize(client.getAddress());
+                }
+                return client.clone();
+            }).toList();
+        });
     }
 }
