@@ -1,8 +1,10 @@
-package org.example.congig;
+package ru.otus.congig;
 
-import org.example.appcontaine.api.AppComponent;
-import org.example.appcontaine.api.AppComponentsContainerConfig;
+import ru.otus.appcontaine.api.AppComponent;
+import ru.otus.appcontaine.api.AppComponentsContainerConfig;
 import org.example.services.*;
+import org.otus.services.*;
+import ru.otus.services.*;
 
 @AppComponentsContainerConfig(order = 1)
 public class AppConfig {

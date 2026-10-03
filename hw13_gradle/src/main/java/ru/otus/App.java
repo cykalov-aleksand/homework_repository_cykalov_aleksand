@@ -1,9 +1,9 @@
-package org.example;
+package ru.otus;
 
-import org.example.appcontaine.AppComponentsContainerImpl;
-import org.example.appcontaine.api.AppComponentsContainer;
-import org.example.congig.AppConfig;
-import org.example.services.GameProcessor;
+import ru.otus.appcontaine.AppComponentsContainerImpl;
+import ru.otus.appcontaine.api.AppComponentsContainer;
+import ru.otus.congig.AppConfig;
+import ru.otus.services.GameProcessor;
 
 public class App {
 

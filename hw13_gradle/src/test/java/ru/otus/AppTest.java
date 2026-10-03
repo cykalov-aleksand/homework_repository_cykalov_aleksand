@@ -1,15 +1,15 @@
-package org.example;
+package ru.otus;
 
-import org.example.appcontaine.AppComponentsContainerImpl;
-import org.example.appcontaine.api.AppComponent;
-import org.example.appcontaine.api.AppComponentsContainerConfig;
-import org.example.congig.AppConfig;
-import org.example.services.*;
+import ru.otus.appcontaine.AppComponentsContainerImpl;
+import ru.otus.appcontaine.api.AppComponent;
+import ru.otus.appcontaine.api.AppComponentsContainerConfig;
+import ru.otus.congig.AppConfig;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import ru.otus.services.*;
 
 import java.io.PrintStream;
 import java.lang.reflect.Modifier;

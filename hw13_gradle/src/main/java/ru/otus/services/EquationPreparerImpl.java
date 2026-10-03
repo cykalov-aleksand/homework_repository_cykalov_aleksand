@@ -1,8 +1,8 @@
-package org.example.services;
+package ru.otus.services;
 
-import org.example.model.DivisionEquation;
-import org.example.model.Equation;
-import org.example.model.MultiplicationEquation;
+import ru.otus.model.DivisionEquation;
+import ru.otus.model.Equation;
+import ru.otus.model.MultiplicationEquation;
 
 import java.util.ArrayList;
 import java.util.Collections;

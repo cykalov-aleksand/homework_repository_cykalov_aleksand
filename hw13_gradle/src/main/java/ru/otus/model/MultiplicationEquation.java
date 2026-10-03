@@ -1,4 +1,4 @@
-package org.example.model;
+package ru.otus.model;
 
 public class MultiplicationEquation extends Equation {
 

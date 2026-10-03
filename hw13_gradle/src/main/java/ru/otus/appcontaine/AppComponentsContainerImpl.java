@@ -1,7 +1,7 @@
-package org.example.appcontaine;
+package ru.otus.appcontaine;
 
-import org.example.appcontaine.api.AppComponentsContainer;
-import org.example.appcontaine.api.AppComponentsContainerConfig;
+import ru.otus.appcontaine.api.AppComponentsContainer;
+import ru.otus.appcontaine.api.AppComponentsContainerConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
