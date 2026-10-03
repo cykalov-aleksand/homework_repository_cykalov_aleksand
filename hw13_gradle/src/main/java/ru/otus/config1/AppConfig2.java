@@ -3,6 +3,7 @@ package ru.otus.config1;
 import ru.otus.appcontaine.api.AppComponent;
 import ru.otus.appcontaine.api.AppComponentsContainerConfig;
 import ru.otus.services.*;
+
 @AppComponentsContainerConfig(order = 2)
 public class AppConfig2 {
     @AppComponent(order = 1, name = "playerService")

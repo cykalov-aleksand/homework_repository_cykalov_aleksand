@@ -9,7 +9,7 @@ import ru.otus.services.GameProcessor;
 public class App1 {
     public static void main(String[] args) {
         AppComponentsContainer container = new AppComponentsContainerImpl(AppConfig1.class, AppConfig2.class);
-       GameProcessor gameProcessor = container.getAppComponent("gameProcessor");
+        GameProcessor gameProcessor = container.getAppComponent("gameProcessor");
         gameProcessor.startGame();
     }
 }

@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 
 class AppTest {
 
-   @DisplayName("Из контекста тремя способами должен корректно доставаться компонент с проставленными полями")
+    @DisplayName("Из контекста тремя способами должен корректно доставаться компонент с проставленными полями")
     @ParameterizedTest(name = "Достаем по: {0}")
     @CsvSource(
             value = {
@@ -72,7 +72,7 @@ class AppTest {
         }
     }
 
-   @DisplayName("В контексте не должно быть компонентов с одинаковым именем")
+    @DisplayName("В контексте не должно быть компонентов с одинаковым именем")
     @Test
     void shouldNotAllowTwoComponentsWithSameName() {
         assertThatCode(() -> new AppComponentsContainerImpl(ConfigWithTwoComponentsWithSameName.class))

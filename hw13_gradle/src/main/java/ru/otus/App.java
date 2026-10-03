@@ -8,7 +8,7 @@ import ru.otus.services.GameProcessor;
 public class App {
 
     public static void main(String[] args) {
-         // Обязательный вариант
+        // Обязательный вариант
         AppComponentsContainer container = new AppComponentsContainerImpl(AppConfig.class);
 
         // Приложение должно работать в каждом из указанных ниже вариантов
@@ -18,4 +18,3 @@ public class App {
         gameProcessor.startGame();
     }
 }
-

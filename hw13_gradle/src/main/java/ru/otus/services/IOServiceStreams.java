@@ -30,4 +30,3 @@ public class IOServiceStreams implements IOService {
         return in.nextInt();
     }
 }
-
