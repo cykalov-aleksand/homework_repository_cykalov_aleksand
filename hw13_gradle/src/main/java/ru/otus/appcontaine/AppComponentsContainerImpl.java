@@ -4,17 +4,20 @@ import ru.otus.appcontaine.api.AppComponent;
 import ru.otus.appcontaine.api.AppComponentsContainer;
 import ru.otus.appcontaine.api.AppComponentsContainerConfig;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
-    public AppComponentsContainerImpl(Class<?> initialConfigClass) {
-        this(new Class<?>[]{initialConfigClass});
-    }
 
     public AppComponentsContainerImpl(Class<?>... initialConfigClasses) {
         if (initialConfigClasses == null || initialConfigClasses.length == 0) {
@@ -29,12 +32,37 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                         c -> c.getAnnotation(AppComponentsContainerConfig.class).order()))
                 .forEach(this::processConfig);
     }
+
+    public AppComponentsContainerImpl(String pathDirectory) {
+        this(loadConfigClassesFromPackage(pathDirectory));
+    }
+
+    public AppComponentsContainerImpl(Class<?> initialConfigClass) {
+        this(new Class<?>[]{initialConfigClass});
+    }
+
+    @Override
+    public <C> C getAppComponent(Class<C> componentClass) {
+        return componentClass.cast(findBeanByType(componentClass));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <C> C getAppComponent(String componentName) {
+        Object bean = appComponentsByName.get(componentName);
+        if (bean == null) {
+            throw new RuntimeException("Не найдено ни одного bean с именем: " + componentName);
+        }
+        return (C) bean;
+    }
+
     private void processConfig(Class<?> configClass) {
         checkConfigClass(configClass);
         try {
             Object configInstance = configClass.getDeclaredConstructor().newInstance();
-            List<Method> beanMethods = Arrays.stream(configClass.getDeclaredMethods()).filter(method -> method.isAnnotationPresent(AppComponent.class))
-                    .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class).order())).toList();
+            List<Method> beanMethods = Arrays.stream(configClass.getDeclaredMethods()).filter(method -> method
+                    .isAnnotationPresent(AppComponent.class)).sorted(Comparator.comparingInt(method -> method
+                    .getAnnotation(AppComponent.class).order())).toList();
             for (Method method : beanMethods) {
                 method.setAccessible(true);
                 Object[] args = Arrays.stream(method.getParameterTypes()).map(this::findBeanByType).toArray();
@@ -75,17 +103,46 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         }
     }
 
-    @Override
-    public <C> C getAppComponent(Class<C> componentClass) {
-        return componentClass.cast(findBeanByType(componentClass));
-    }
-    @SuppressWarnings("unchecked")
-    @Override
-    public <C> C getAppComponent(String componentName) {
-        Object bean = appComponentsByName.get(componentName);
-        if (bean == null) {
-            throw new RuntimeException("Не найдено ни одного bean с именем: " + componentName);
+    private static Class<?>[] loadConfigClassesFromPackage(String packageName) {
+        ClassLoader classLoader = AppComponentsContainerImpl.class.getClassLoader();
+        String packagePath = packageName.replace('.', '/');
+        List<Class<?>> configs = new ArrayList<>();
+        boolean packageFound = false;
+        try {
+            Enumeration<URL> resources = classLoader.getResources(packagePath);
+            while (resources.hasMoreElements()) {
+                URL resource = resources.nextElement();
+                if (!"file".equals(resource.getProtocol())) {
+                    continue;
+                }
+                packageFound = true;
+                Path root = Path.of(resource.toURI());
+                try (Stream<Path> files = Files.walk(root)) {
+                    List<Path> classFiles = files
+                            .filter(p -> p.toString().endsWith(".class"))
+                            .toList();
+                    for (Path file : classFiles) {
+                        Path relative = root.relativize(file);
+                        String binaryName = packageName + '.' + relative.toString()
+                                .replace('\\', '.').replace('/', '.')
+                                .replace(".class", "");
+                        try {
+                            Class<?> clazz = Class.forName(binaryName, false, classLoader);
+                            if (clazz.isAnnotationPresent(AppComponentsContainerConfig.class)) {
+                                configs.add(clazz);
+                            }
+                        } catch (ClassNotFoundException e) {
+                            throw new RuntimeException("Не удалось загрузить класс: " + binaryName, e);
+                        }
+                    }
+                }
+            }
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
         }
-        return (C) bean;
+        if (!packageFound) {
+            throw new IllegalArgumentException("Пакет не найден: " + packageName);
+        }
+        return configs.toArray(new Class<?>[0]);
     }
 }

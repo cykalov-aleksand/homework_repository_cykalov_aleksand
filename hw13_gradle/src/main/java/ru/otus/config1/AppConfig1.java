@@ -1,4 +1,4 @@
-package ru.otus.congig;
+package ru.otus.config1;
 
 import ru.otus.appcontaine.api.AppComponent;
 import ru.otus.appcontaine.api.AppComponentsContainerConfig;

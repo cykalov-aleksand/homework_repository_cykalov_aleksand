@@ -3,7 +3,7 @@ package ru.otus;
 import ru.otus.appcontaine.AppComponentsContainerImpl;
 import ru.otus.appcontaine.api.AppComponent;
 import ru.otus.appcontaine.api.AppComponentsContainerConfig;
-import ru.otus.congig.AppConfig;
+import ru.otus.config.AppConfig;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
