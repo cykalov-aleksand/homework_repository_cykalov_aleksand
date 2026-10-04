@@ -8,7 +8,15 @@ version = 'unspecified'
 repositories {
     mavenCentral()
 }
-
+jar {
+    manifest {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        attributes 'Main-Class': 'ru.otus.App2'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
 dependencies {
     // Source: https://mvnrepository.com/artifact/org.reflections/reflections
     implementation 'org.reflections:reflections:0.10.2'

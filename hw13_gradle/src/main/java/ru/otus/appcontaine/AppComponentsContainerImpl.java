@@ -7,11 +7,14 @@ import ru.otus.appcontaine.api.AppComponentsContainerConfig;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.JarURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.stream.Stream;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
@@ -112,29 +115,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             Enumeration<URL> resources = classLoader.getResources(packagePath);
             while (resources.hasMoreElements()) {
                 URL resource = resources.nextElement();
-                if (!"file".equals(resource.getProtocol())) {
-                    continue;
-                }
-                packageFound = true;
-                Path root = Path.of(resource.toURI());
-                try (Stream<Path> files = Files.walk(root)) {
-                    List<Path> classFiles = files
-                            .filter(p -> p.toString().endsWith(".class"))
-                            .toList();
-                    for (Path file : classFiles) {
-                        Path relative = root.relativize(file);
-                        String binaryName = packageName + '.' + relative.toString()
-                                .replace('\\', '.').replace('/', '.')
-                                .replace(".class", "");
-                        try {
-                            Class<?> clazz = Class.forName(binaryName, false, classLoader);
-                            if (clazz.isAnnotationPresent(AppComponentsContainerConfig.class)) {
-                                configs.add(clazz);
-                            }
-                        } catch (ClassNotFoundException e) {
-                            throw new RuntimeException("Не удалось загрузить класс: " + binaryName, e);
-                        }
-                    }
+                String protocol = resource.getProtocol();
+                if ("file".equals(protocol)) {
+                    packageFound = true;
+                    scanDirectory(resource, packageName, classLoader, configs);
+                } else if ("jar".equals(protocol)) {
+                    packageFound = true;
+                    scanJar(resource, packageName, classLoader, configs);
                 }
             }
         } catch (IOException | URISyntaxException e) {
@@ -144,5 +131,56 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             throw new IllegalArgumentException("Пакет не найден: " + packageName);
         }
         return configs.toArray(new Class<?>[0]);
+    }
+
+    private static void scanDirectory(URL resource, String packageName, ClassLoader classLoader,
+                                      List<Class<?>> configs) throws IOException, URISyntaxException {
+        Path root = Path.of(resource.toURI());
+        try (Stream<Path> files = Files.walk(root)) {
+            List<Path> classFiles = files
+                    .filter(p -> p.toString().endsWith(".class"))
+                    .toList();
+            for (Path file : classFiles) {
+                Path relative = root.relativize(file);
+                String binaryName = packageName + '.' + relative.toString()
+                        .replace('\\', '.').replace('/', '.')
+                        .replace(".class", "");
+                loadAndCheck(binaryName, classLoader, configs);
+            }
+        }
+    }
+
+    private static void scanJar(URL resource, String packageName, ClassLoader classLoader,
+                                List<Class<?>> configs) throws IOException {
+        JarURLConnection connection = (JarURLConnection) resource.openConnection();
+        connection.setUseCaches(false); // важно на Windows, см. ниже
+        try (JarFile jarFile = connection.getJarFile()) {
+            Enumeration<JarEntry> entries = jarFile.entries();
+            String packagePrefix = packageName.replace('.', '/') + '/';
+            while (entries.hasMoreElements()) {
+                JarEntry entry = entries.nextElement();
+                String entryName = entry.getName();
+                if (entry.isDirectory()
+                        || !entryName.startsWith(packagePrefix)
+                        || !entryName.endsWith(".class")) {
+                    continue;
+                }
+                String binaryName = entryName
+                        .substring(0, entryName.length() - ".class".length())
+                        .replace('/', '.');
+                loadAndCheck(binaryName, classLoader, configs);
+            }
+        }
+    }
+
+    private static void loadAndCheck(String binaryName, ClassLoader classLoader, List<Class<?>> configs) {
+        try {
+            Class<?> clazz = Class.forName(binaryName, false, classLoader);
+            if (clazz.isAnnotationPresent(AppComponentsContainerConfig.class)) {
+                configs.add(clazz);
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Не удалось загрузить класс: " + binaryName, e);
+        }
     }
 }
