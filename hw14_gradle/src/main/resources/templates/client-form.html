@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Новый клиент</title>
+</head>
+<body>
+<h1>Новый клиент</h1>
+
+<form th:action="@{/clients}" th:object="${client}" method="post">
+    <div>
+        <label>Имя:
+            <input type="text" th:field="*{name}" required />
+        </label>
+    </div>
+
+    <div>
+        <label>Адрес ID (оставьте пустым, чтобы создать новый):
+            <input type="number" th:field="*{addressId}" />
+        </label>
+    </div>
+
+    <div>
+        <label>Телефон (добавится к клиенту при сохранении):
+            <input type="text" name="phoneNumber" />
+        </label>
+    </div>
+
+    <button type="submit">Сохранить</button>
+</form>
+
+<br/>
+<a th:href="@{/clients}">Отмена</a>
+</body>
+</html>

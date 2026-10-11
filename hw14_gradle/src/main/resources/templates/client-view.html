@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="|Клиент ${client.id}|"></title>
+</head>
+<body>
+<h1>Клиент №<span th:text="${client.id}"></span></h1>
+
+<p><strong>Имя:</strong> <span th:text="${client.name}"></span></p>
+
+<!-- Безопасный вывод адреса -->
+<p th:if="${client.address != null}">
+    <strong>Адрес:</strong> <span th:text="${client.address.street}"></span>
+</p>
+<p th:unless="${client.address != null}">
+    <strong>Адрес:</strong> Не указан
+</p>
+
+<!-- Можно оставить ID для отладки, если хочешь -->
+<!-- <p><strong>ID адреса:</strong> <span th:text="${client.addressId}"></span></p> -->
+
+<a href="/clients">Назад к списку</a>
+</body>
+</html>
