@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS address (
 
 CREATE TABLE IF NOT EXISTS phone (
                                      id BIGSERIAL PRIMARY KEY,
-                                     number VARCHAR(15),
+                                     number VARCHAR(30),
                                     client_id BIGINT NOT NULL,
     CONSTRAINT fk_phone_client FOREIGN KEY (client_id) REFERENCES client(id) ON DELETE CASCADE
     );
@@ -22,4 +22,5 @@ CREATE TABLE IF NOT EXISTS phone (
 -- Индексы (для findAllByClientId и производительности)
 CREATE INDEX IF NOT EXISTS idx_phone_client_id ON phone(client_id);
 CREATE INDEX IF NOT EXISTS idx_client_address_id ON client(address_id);
+
 

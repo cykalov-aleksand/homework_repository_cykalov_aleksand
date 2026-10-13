@@ -1,4 +1,4 @@
-package org.example.crm.model;
+package org.example.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,34 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Новый клиент</title>
+    <title th:text="${clientDto.id == null ? 'Новый клиент' : 'Редактирование клиента'}">Новый клиент</title>
 </head>
 <body>
-<h1>Новый клиент</h1>
+<h1 th:text="${clientDto.id == null ? 'Новый клиент' : 'Редактирование клиента'}"></h1>
 
-<form th:action="@{/clients}" th:object="${client}" method="post">
+<!-- Важно: th:object="${clientDto}" -->
+<form th:object="${clientDto}" th:action="@{/clients}" method="post">
+
+    <!-- Скрытый ID для редактирования -->
+    <input type="hidden" th:field="*{id}" />
+
     <div>
         <label>Имя:
-            <input type="text" th:field="*{name}" required />
+            <input type="text" th:field="*{name}" required placeholder="Например: Иван Иванов" />
         </label>
     </div>
 
+    <!-- ИСПРАВЛЕНО: было address, стало addressStreet -->
     <div>
-        <label>Адрес ID (оставьте пустым, чтобы создать новый):
-            <input type="number" th:field="*{addressId}" />
+        <label>Адрес (улица и дом):
+            <input type="text" th:field="*{addressStreet}" placeholder="Например: Москва, ул. Пушкина, 10" />
         </label>
     </div>
 
+    <!-- Поле для телефонов (строка через запятую) -->
     <div>
-        <label>Телефон (добавится к клиенту при сохранении):
-            <input type="text" name="phoneNumber" />
+        <label>Телефоны (через запятую, например: 79990000001, 79990000002):
+            <input type="text" th:field="*{phoneNumbersStr}" placeholder="Номера телефонов" />
         </label>
     </div>
+
+    <!-- Если тебе нужно явно передавать addressId (например, для выбора из списка), оставь это поле.
+         Если нет — можешь удалить. Для простой формы оно часто не нужно. -->
+    <!--
+    <div>
+        <label>ID адреса (если знаешь):
+            <input type="number" th:field="*{addressId}" placeholder="Оставьте пустым, если не знаете" />
+        </label>
+    </div>
+    -->
 
     <button type="submit">Сохранить</button>
+    <a th:href="@{/clients}">Отмена</a>
 </form>
-
-<br/>
-<a th:href="@{/clients}">Отмена</a>
 </body>
 </html>

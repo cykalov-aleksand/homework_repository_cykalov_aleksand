@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список клиентов</title>
+</head>
+<body>
+<h1>Клиенты</h1>
+
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Адрес</th>
+        <th>Телефоны</th>
+        <th>Действия</th>  <!-- Новая колонка -->
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Сообщение, если список пустой -->
+    <tr th:if="${#lists.isEmpty(clients)}">
+        <td colspan="5">Клиентов пока нет</td>
+    </tr>
+
+    <!-- Строки с клиентами -->
+    <tr th:each="client : ${clients}">
+        <td th:text="${client.id}"></td>
+        <td th:text="${client.name != null ? client.name : '—'}"></td>
+        <td th:text="${client.addressStreet != null ? client.addressStreet : '—'}"></td>
+
+        <td>
+            <span th:if="${#lists.isEmpty(client.phoneNumbers)}">—</span>
+            <span th:unless="${#lists.isEmpty(client.phoneNumbers)}" th:remove="tag">
+                <span th:each="number : ${client.phoneNumbers}"
+                      th:text="${number}"
+                      th:remove="tag"></span>
+            </span>
+        </td>
+
+        <!-- Кнопка редактирования: переход на /clients/{id}/edit -->
+        <td>
+            <a th:href="@{/clients/{id}/edit(id=${client.id})}" class="btn">Редактировать</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Ссылка на создание нового (для полноты картины) -->
+<p><a th:href="@{/clients/new}" class="btn btn-primary">Добавить клиента</a></p>
+</body>
+</html>

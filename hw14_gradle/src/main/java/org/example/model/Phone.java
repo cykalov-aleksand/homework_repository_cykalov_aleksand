@@ -1,8 +1,9 @@
-package org.example.crm.model;
+package org.example.model;
 
 
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Data
@@ -11,13 +12,9 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Phone {
     @Id
     private Long id;
+    @Column("client_id")
     private Long clientId;
     private String number;
-public Phone(){}
-    public Phone(Long id, Long clientId, String number) {
-        this.id = id;
-        this.clientId = clientId;
-        this.number = number;
-    }
+
 }
 
