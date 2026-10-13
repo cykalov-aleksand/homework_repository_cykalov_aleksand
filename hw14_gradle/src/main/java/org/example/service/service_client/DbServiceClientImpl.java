@@ -3,11 +3,9 @@ package org.example.service.service_client;
 import lombok.RequiredArgsConstructor;
 import org.example.model.Address;
 import org.example.model.Client;
-//import org.example.model.Phone;
 import org.example.model.Phone;
 import org.example.repository.AddressRepository;
 import org.example.repository.ClientRepository;
-//import org.example.repository.PhoneRepository;
 import org.example.repository.PhoneRepository;
 import org.example.dto.ClientTableDto;
 import org.example.mapper.ClientMapper;
@@ -34,8 +32,6 @@ public class DbServiceClientImpl implements DbServiceClient {
         Client client = new Client();
         client.setName(clientTableDto.getName());
         client.setAddressId(clientTableDto.getAddressId());
-        // client.setPhones(...) <-- НЕ делаем!
-
         Long addressId = clientTableDto.getAddressId();
 
         // 2. Логика работы с адресом (оставляем как у тебя)
@@ -127,11 +123,6 @@ public class DbServiceClientImpl implements DbServiceClient {
 
         return clientMapper.toDto(client);
     }
-
-   // @Override
-   // public Client getClient(Long id) {
-   //     return findById(id);
-   // }
 
     @Transactional(readOnly = true)
        @Override

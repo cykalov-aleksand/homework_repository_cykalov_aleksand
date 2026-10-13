@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '4.1.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.flywaydb.flyway' version '13.5.0'
+}
+
+group = 'org.example'
+version = 'unspecified'
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+   }
+flyway {
+    url = 'jdbc:postgresql://localhost:5430/demoDB'
+    user = 'usr'
+    password = 'pwd'
+    locations = ['classpath:db/migration']
+    //driver = 'org.postgresql.Driver'
+    schemas = ['public']
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Source: https://mvnrepository.com/artifact/org.mapstruct/mapstruct
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    implementation 'org.slf4j:slf4j-api:2.0.20'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.6.3'
+    runtimeOnly 'org.postgresql:postgresql:42.7.3'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-flyway'
+    runtimeOnly 'org.flywaydb:flyway-database-postgresql:13.5.0'
+   // implementation 'org.springframework.boot:spring-boot-starter-session-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    //implementation 'org.flywaydb:flyway-core:13.5.0'
+
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jdbc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-flyway-test'
+    //testImplementation 'org.springframework.boot:spring-boot-starter-session-jdbc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+        testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+}
