@@ -9,4 +9,5 @@ public interface DbServiceClient {
      List<ClientTableDto> findAllForTable();
       ClientTableDto getClientWithDetails(Long id);
     ClientTableDto findById(Long id);
+    public void deleteClient(Long id);
 }

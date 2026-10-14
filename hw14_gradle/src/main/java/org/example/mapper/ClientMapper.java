@@ -13,12 +13,6 @@ import java.util.List;
 
 @Component
 public class ClientMapper {
-private final AddressRepository addressRepository;
-
-    public ClientMapper(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
-
     public Client toClient(ClientTableDto dto) {
         Client client = new Client();
         client.setId(dto.getId());
@@ -49,7 +43,7 @@ private final AddressRepository addressRepository;
 
         // Логика адреса (как раньше)
         if (client.getAddressId() != null) {
-            Address address = addressRepository.findById(client.getAddressId()).orElse(null);
+            Address address = client.getAddress();
             dto.setAddressStreet(address != null ? address.getStreet() : "—");
         } else {
             dto.setAddressStreet("—");

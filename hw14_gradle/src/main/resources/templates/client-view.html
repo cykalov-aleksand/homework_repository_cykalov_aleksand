@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8">
 <head>
     <title th:text="|Клиент ${client.id}|"></title>
 </head>
@@ -15,9 +16,6 @@
 <p th:unless="${client.address != null}">
     <strong>Адрес:</strong> Не указан
 </p>
-
-<!-- Можно оставить ID для отладки, если хочешь -->
-<!-- <p><strong>ID адреса:</strong> <span th:text="${client.addressId}"></span></p> -->
 
 <a href="/clients">Назад к списку</a>
 </body>

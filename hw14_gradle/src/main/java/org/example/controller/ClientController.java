@@ -51,6 +51,15 @@ public class ClientController {
     public String saveClient(@ModelAttribute("clientDto") ClientTableDto dto,
                              RedirectAttributes redirectAttributes) {
 
+
+
+        if (dto.getName() == null || dto.getName().isBlank()) {
+            redirectAttributes.addFlashAttribute("error", "Имя клиента обязательно");
+            return "redirect:/clients/new";
+        }
+
+
+
         // Превращаем строку телефонов обратно в список
         if (dto.getPhoneNumbersStr() != null && !dto.getPhoneNumbersStr().isBlank()) {
             String[] parts = dto.getPhoneNumbersStr().split("\\s*,\\s*"); // Разделяем по запятой + пробелы
@@ -78,42 +87,24 @@ public class ClientController {
         model.addAttribute("clientDto", dto); // ✅ Обязательно "clientDto"
         return "client-form";
     }
-/*
-    @GetMapping("/new")
-    public String newForm(Model model) {
-        model.addAttribute("client", new Client());
-        return "client-form";
-    }
-
-    @GetMapping("/{id}")
-    public String view(@PathVariable Long id, Model model) {
-        Client client = dbServiceClient.findById(id); // уже с телефонами и адресом
-
-        if (client == null) {
-            model.addAttribute("error", "Клиент не найден");
-            return "error";
+    @PostMapping("/{id}/delete")
+    public String deleteClient(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            dbServiceClient.deleteClient(id);
+            redirectAttributes.addFlashAttribute("message", "Клиент с ID " + id + " успешно удалён!");
+            log.info("Клиент ID {} удалён пользователем", id);
+        } catch (IllegalArgumentException e) {
+            log.warn("Попытка удалить несуществующего клиента ID {}", id, e);
+            redirectAttributes.addFlashAttribute("error", "Не удалось удалить: клиент не найден.");
+        } catch (Exception e) {
+            log.error("Ошибка при удалении клиента ID {}", id, e);
+            redirectAttributes.addFlashAttribute("error", "Произошла ошибка при удалении.");
         }
-
-        model.addAttribute("client", client);
-        return "client-view";
-    }
-
-    @PostMapping
-    public String create(@ModelAttribute Client client,
-                         @RequestParam(required = false) String phoneNumber,
-                         Model model) {
-
-        // Добавляем телефон, если он передан
-        if (phoneNumber != null && !phoneNumber.trim().isEmpty()) {
-            var phone = new Phone();
-            phone.setNumber(phoneNumber.trim());
-            client.getPhones().add(phone); // phones уже инициализирован в Client
-        }
-
-        dbServiceClient.saveClient(client);
-        log.info("Создан клиент: id={}, name={}", client.getId(), client.getName());
         return "redirect:/clients";
     }
-
- */
+    @GetMapping("/delete/{id}")
+    public String redirectToDelete(@PathVariable Long id) {
+        // Лучше использовать POST для удаления, но этот метод можно оставить как заглушку
+        return "redirect:/clients";
+    }
 }

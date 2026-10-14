@@ -10,6 +10,8 @@ import org.example.repository.PhoneRepository;
 import org.example.dto.ClientTableDto;
 import org.example.mapper.ClientMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -26,29 +28,37 @@ public class DbServiceClientImpl implements DbServiceClient {
     private final PhoneRepository phoneRepository;
     private final ClientMapper clientMapper;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
     public ClientTableDto saveClient(ClientTableDto clientTableDto) {
-        // 1. Создаём пустую сущность Client (БЕЗ телефонов!)
-        Client client = new Client();
-        client.setName(clientTableDto.getName());
-        client.setAddressId(clientTableDto.getAddressId());
-        Long addressId = clientTableDto.getAddressId();
+        Long clientId = clientTableDto.getId();
+        Client client;
 
-        // 2. Логика работы с адресом (оставляем как у тебя)
-        if (addressId != null) {
-            Optional<Address> opt = addressRepository.findById(addressId);
-            if (opt.isPresent()) {
-                Address existing = opt.get();
-                String newStreet = clientTableDto.getAddressStreet();
-                if (newStreet != null && !newStreet.isBlank()
-                        && !existing.getStreet().equals(newStreet)) {
-                    existing.setStreet(newStreet);
-                    addressRepository.save(existing);
-                }
-            } else {
-                throw new IllegalArgumentException("Адрес с ID " + addressId + " не найден!");
-            }
+        // ГЛАВНОЕ: если ID есть — загружаем существующую запись, иначе создаём новую
+        if (clientId != null) {
+            client = clientRepository.findById(clientId)
+                    .orElseThrow(() -> new IllegalArgumentException("Клиент с ID " + clientId + " не найден!"));
         } else {
+            client = new Client();
+        }
+
+        // Обновляем поля
+        client.setName(clientTableDto.getName());
+
+        // Работа с адресом
+        Long addressId = clientTableDto.getAddressId();
+        if (addressId != null) {
+            Address existing = addressRepository.findById(addressId)
+                    .orElseThrow(() -> new IllegalArgumentException("Адрес с ID " + addressId + " не найден!"));
+
+            String newStreet = clientTableDto.getAddressStreet();
+            if (newStreet != null && !newStreet.isBlank()
+                    && !existing.getStreet().equals(newStreet)) {
+                existing.setStreet(newStreet);
+                addressRepository.save(existing); // В Spring Data JDBC нужно явно сохранить
+            }
+            client.setAddressId(existing.getId());
+        } else {
+            // Создаём новый адрес, если его нет
             String street = (clientTableDto.getAddressStreet() != null && !clientTableDto.getAddressStreet().isBlank())
                     ? clientTableDto.getAddressStreet()
                     : "Адрес для " + (client.getName() != null ? client.getName() : "клиента");
@@ -56,35 +66,31 @@ public class DbServiceClientImpl implements DbServiceClient {
             Address newAddress = new Address();
             newAddress.setStreet(street);
             newAddress = addressRepository.save(newAddress);
-
             client.setAddressId(newAddress.getId());
         }
 
-        // 3. Сохраняем клиента ПЕРВЫМ — теперь у него есть реальный ID в БД
+        // Сохраняем клиента: INSERT если id == null, UPDATE если id != null
         client = clientRepository.save(client);
         Long savedClientId = client.getId();
 
-        // 4. Теперь отдельно сохраняем телефоны
-        List<String> phoneNumbers = parsePhoneString(clientTableDto.getPhoneNumbersStr());
+        // Синхронизация телефонов: удаляем старые, добавляем новые
+        phoneRepository.deleteByClientId(savedClientId);
 
+        List<String> phoneNumbers = parsePhoneString(clientTableDto.getPhoneNumbersStr());
         for (String number : phoneNumbers) {
             Phone phone = new Phone();
             phone.setNumber(number);
-            phone.setClientId(savedClientId); // ✅ Привязываем по ID
-
-            phoneRepository.save(phone); // ✅ Отдельный репозиторий — чистый INSERT
+            phone.setClientId(savedClientId);
+            phoneRepository.save(phone);
         }
 
-        // 5. Возвращаем свежий DTO
         return clientMapper.toDto(client);
     }
-
-    // Вспомогательный метод (вставь его в класс)
     private List<String> parsePhoneString(String input) {
         if (input == null || input.isBlank()) {
             return List.of();
         }
-        return java.util.Arrays.stream(input.split(","))
+        return Arrays.stream(input.split(","))
                 .map(String::trim)
                 .filter(s -> !s.isEmpty())
                 .toList();
@@ -129,7 +135,7 @@ public class DbServiceClientImpl implements DbServiceClient {
     public List<ClientTableDto> findAllForTable() {
         // 1. Получаем всех клиентов (только их данные из таблицы client)
         List<Client> clients = StreamSupport.stream(clientRepository.findAll().spliterator(),false).toList();
-        if (clients.isEmpty()) {
+       if (clients.isEmpty()) {
             return List.of();
         }
 
@@ -183,5 +189,13 @@ public class DbServiceClientImpl implements DbServiceClient {
         return clients.stream()
                 .map(clientMapper::toDto)
                 .toList();
+    }
+    @Transactional
+    public void deleteClient(Long id){
+        Long addressId = clientRepository.addressIdClient(id);
+        clientRepository.deleteById(id);
+        if (addressId != null) {
+            addressRepository.deleteById(addressId);
+        }
     }
 }

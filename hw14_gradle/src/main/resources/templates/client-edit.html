@@ -1,5 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8">
 <form th:action="@{/clients}" method="post" th:object="${clientDto}">
-    <!-- Скрытое поле с ID клиента -->
+        <!-- Скрытое поле с ID клиента -->
     <input type="hidden" th:field="*{id}" />
 
     <!-- Скрытое поле с ID адреса (чтобы сервис знал, какой обновлять) -->

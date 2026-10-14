@@ -1,12 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8">
 <head>
     <title th:text="${clientDto.id == null ? 'Новый клиент' : 'Редактирование клиента'}">Новый клиент</title>
+     <style>
+        .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    </style>
 </head>
 <body>
+
+<!-- Блок для ошибок валидации (например, «Имя клиента обязательно») -->
+<div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+<!-- Блок для успешных сообщений (если вдруг попадёт сюда после редиректа — редко, но бывает) -->
+<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
 <h1 th:text="${clientDto.id == null ? 'Новый клиент' : 'Редактирование клиента'}"></h1>
 
-<!-- Важно: th:object="${clientDto}" -->
 <form th:object="${clientDto}" th:action="@{/clients}" method="post">
 
     <!-- Скрытый ID для редактирования -->
@@ -14,36 +26,26 @@
 
     <div>
         <label>Имя:
-            <input type="text" th:field="*{name}" required placeholder="Например: Иван Иванов" />
+           <!--  <input type="text" th:field="*{name}" required placeholder="Например: Иван Иванов" />  -->
+            <input type="text" th:field="*{name}" placeholder="Например: Иван Иванов" />
         </label>
     </div>
 
-    <!-- ИСПРАВЛЕНО: было address, стало addressStreet -->
     <div>
         <label>Адрес (улица и дом):
             <input type="text" th:field="*{addressStreet}" placeholder="Например: Москва, ул. Пушкина, 10" />
         </label>
     </div>
 
-    <!-- Поле для телефонов (строка через запятую) -->
     <div>
         <label>Телефоны (через запятую, например: 79990000001, 79990000002):
             <input type="text" th:field="*{phoneNumbersStr}" placeholder="Номера телефонов" />
         </label>
     </div>
 
-    <!-- Если тебе нужно явно передавать addressId (например, для выбора из списка), оставь это поле.
-         Если нет — можешь удалить. Для простой формы оно часто не нужно. -->
-    <!--
-    <div>
-        <label>ID адреса (если знаешь):
-            <input type="number" th:field="*{addressId}" placeholder="Оставьте пустым, если не знаете" />
-        </label>
-    </div>
-    -->
-
     <button type="submit">Сохранить</button>
     <a th:href="@{/clients}">Отмена</a>
 </form>
+
 </body>
 </html>
