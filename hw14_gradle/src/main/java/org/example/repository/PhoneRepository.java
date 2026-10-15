@@ -12,4 +12,5 @@ public interface PhoneRepository extends CrudRepository<Phone, Long> {
         @Modifying
         @Query("DELETE FROM phone WHERE client_id = :clientId")
         void deleteByClientId(@Param("clientId") Long clientId);
+        List<Phone> findAllByClientIdIn(List<Long> clientIds);
 }

@@ -27,8 +27,9 @@ repositories {
 dependencies {
     // Source: https://mvnrepository.com/artifact/org.mapstruct/mapstruct
     implementation 'org.mapstruct:mapstruct:1.6.3'
-    implementation 'org.slf4j:slf4j-api:2.0.20'
-    runtimeOnly 'ch.qos.logback:logback-classic:1.6.3'
+    implementation 'org.slf4j:slf4j-api:2.0.18'
+    runtimeOnly 'ch.qos.logback:logback-core:1.5.35'
+    runtimeOnly 'ch.qos.logback:logback-classic:1.5.35'
     runtimeOnly 'org.postgresql:postgresql:42.7.3'
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-flyway'

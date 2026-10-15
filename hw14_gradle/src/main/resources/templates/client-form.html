@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<meta charset="UTF-8">
 <head>
+    <meta charset="UTF-8">
     <title th:text="${clientDto.id == null ? 'Новый клиент' : 'Редактирование клиента'}">Новый клиент</title>
-     <style>
+    <style>
         .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; }
         .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
         .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
@@ -11,11 +11,8 @@
 </head>
 <body>
 
-<!-- Блок для ошибок валидации (например, «Имя клиента обязательно») -->
+<!-- Блок для ошибок валидации -->
 <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
-
-<!-- Блок для успешных сообщений (если вдруг попадёт сюда после редиректа — редко, но бывает) -->
-<div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
 
 <h1 th:text="${clientDto.id == null ? 'Новый клиент' : 'Редактирование клиента'}"></h1>
 
@@ -26,8 +23,7 @@
 
     <div>
         <label>Имя:
-           <!--  <input type="text" th:field="*{name}" required placeholder="Например: Иван Иванов" />  -->
-            <input type="text" th:field="*{name}" placeholder="Например: Иван Иванов" />
+            <input type="text" th:field="*{name}" placeholder="Например: Иван Иванов" required />
         </label>
     </div>
 
@@ -38,9 +34,12 @@
     </div>
 
     <div>
-        <label>Телефоны (через запятую, например: 79990000001, 79990000002):
-            <input type="text" th:field="*{phoneNumbersStr}" placeholder="Номера телефонов" />
-        </label>
+        <label>Телефоны (через запятую):</label>
+        <!-- ВАЖНО: не th:field, а name + th:value, потому что phoneNumbersStr нет в DTO -->
+        <input type="text"
+               name="phoneNumbersStr"
+               th:value="${phoneNumbersStr}"
+               placeholder="Например: +79991234567, +79997654321"/>
     </div>
 
     <button type="submit">Сохранить</button>

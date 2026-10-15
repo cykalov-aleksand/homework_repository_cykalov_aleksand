@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.dto.ClientTableDto;
-import org.example.service.service_client.DbServiceClient;
+import org.example.service.DbServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -32,61 +32,58 @@ public class ClientController {
         mav.addObject("clients", clients);
         return mav;
     }
+
     @GetMapping("/{id}/edit")
     public String editClientForm(@PathVariable Long id, Model model) {
         ClientTableDto dto = dbServiceClient.findById(id);
 
-        // Превращаем список телефонов в строку для удобного редактирования
+        String phoneNumbersStr = "";
         if (dto.getPhoneNumbers() != null && !dto.getPhoneNumbers().isEmpty()) {
-            dto.setPhoneNumbersStr(String.join(", ", dto.getPhoneNumbers()));
-        } else {
-            dto.setPhoneNumbersStr("");
+            phoneNumbersStr = String.join(", ", dto.getPhoneNumbers());
         }
 
         model.addAttribute("clientDto", dto);
-        return "client-edit";
+        model.addAttribute("phoneNumbersStr", phoneNumbersStr); // обязательно
+        return "client-form";
     }
 
     @PostMapping
-    public String saveClient(@ModelAttribute("clientDto") ClientTableDto dto,
-                             RedirectAttributes redirectAttributes) {
-
-
+    public String saveClient(
+            @ModelAttribute("clientDto") ClientTableDto dto,
+            @RequestParam(name = "phoneNumbersStr", required = false) String phoneNumbersStr,
+            RedirectAttributes redirectAttributes) {
 
         if (dto.getName() == null || dto.getName().isBlank()) {
             redirectAttributes.addFlashAttribute("error", "Имя клиента обязательно");
             return "redirect:/clients/new";
         }
 
-
-
-        // Превращаем строку телефонов обратно в список
-        if (dto.getPhoneNumbersStr() != null && !dto.getPhoneNumbersStr().isBlank()) {
-            String[] parts = dto.getPhoneNumbersStr().split("\\s*,\\s*"); // Разделяем по запятой + пробелы
-            List<String> numbers = new ArrayList<>();
+        // Конвертация строки → список
+        List<String> numbers = new ArrayList<>();
+        if (phoneNumbersStr != null && !phoneNumbersStr.isBlank()) {
+            String[] parts = phoneNumbersStr.split("\\s*,\\s*");
             for (String part : parts) {
                 if (!part.isBlank()) {
                     numbers.add(part);
                 }
             }
-            dto.setPhoneNumbers(numbers);
-        } else {
-            dto.setPhoneNumbers(new ArrayList<>());
         }
+        dto.setPhoneNumbers(numbers);
 
-        // Вызываем твой сервис. Он сам поймёт: если dto.id == null → создать, иначе → обновить
         dbServiceClient.saveClient(dto);
 
         redirectAttributes.addFlashAttribute("message", "Клиент успешно сохранён!");
         return "redirect:/clients";
     }
+
     @GetMapping("/new")
     public String showCreateForm(Model model) {
         ClientTableDto dto = new ClientTableDto();
-        dto.setPhoneNumbersStr(""); // Важно: пустая строка, а не null, чтобы поле не было пустым в форме
-        model.addAttribute("clientDto", dto); // ✅ Обязательно "clientDto"
+        model.addAttribute("clientDto", dto);
+        model.addAttribute("phoneNumbersStr", "");
         return "client-form";
     }
+
     @PostMapping("/{id}/delete")
     public String deleteClient(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
@@ -102,6 +99,7 @@ public class ClientController {
         }
         return "redirect:/clients";
     }
+
     @GetMapping("/delete/{id}")
     public String redirectToDelete(@PathVariable Long id) {
         // Лучше использовать POST для удаления, но этот метод можно оставить как заглушку
