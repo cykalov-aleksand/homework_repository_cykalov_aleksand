@@ -12,27 +12,18 @@ import java.util.List;
 
 @Component
 public class ClientMapper {
-
-    public ClientTableDto toDto(Client client) {
+    public ClientTableDto toDto(Client client, Address address, List<Phone> phones) {
         ClientTableDto dto = new ClientTableDto();
         dto.setId(client.getId());
         dto.setName(client.getName());
 
-        // Адрес: используем подгруженный client.getAddress()
-        Address address = client.getAddress();
-        if (address != null) {
-            dto.setAddressStreet(address.getStreet());
-        } else {
-            // Если адреса нет вообще (не должно быть при валидных данных), ставим заглушку
-            dto.setAddressStreet("—");
-        }
+        dto.setAddressStreet(address != null ? address.getStreet() : "—");
 
-        // Телефоны: берём из client.getPhones(), который уже заполнен в сервисе
         List<String> numbers = new ArrayList<>();
-        if (client.getPhones() != null) {
-            for (Phone phone : client.getPhones()) {
-                if (phone != null && phone.getNumber() != null && !phone.getNumber().isBlank()) {
-                    numbers.add(phone.getNumber());
+        if (phones != null) {
+            for (Phone p : phones) {
+                if (p != null && p.getNumber() != null && !p.getNumber().isBlank()) {
+                    numbers.add(p.getNumber());
                 }
             }
         }

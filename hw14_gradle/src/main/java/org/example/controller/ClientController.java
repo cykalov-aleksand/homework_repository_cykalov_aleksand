@@ -1,7 +1,7 @@
 package org.example.controller;
 
 import org.example.dto.ClientTableDto;
-import org.example.service.DbServiceClient;
+import org.example.service.DbServiceClientCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -19,9 +19,9 @@ import java.util.List;
 public class ClientController {
 
     private static final Logger log = LoggerFactory.getLogger(ClientController.class);
-    private final DbServiceClient dbServiceClient;
+    private final DbServiceClientCache dbServiceClient;
 
-    public ClientController(DbServiceClient dbServiceClient) {
+    public ClientController(DbServiceClientCache dbServiceClient) {
         this.dbServiceClient = dbServiceClient;
     }
 
@@ -43,7 +43,7 @@ public class ClientController {
         }
 
         model.addAttribute("clientDto", dto);
-        model.addAttribute("phoneNumbersStr", phoneNumbersStr); // обязательно
+        model.addAttribute("phoneNumbersStr", phoneNumbersStr);
         return "client-form";
     }
 
@@ -102,7 +102,6 @@ public class ClientController {
 
     @GetMapping("/delete/{id}")
     public String redirectToDelete(@PathVariable Long id) {
-        // Лучше использовать POST для удаления, но этот метод можно оставить как заглушку
-        return "redirect:/clients";
+       return "redirect:/clients";
     }
 }

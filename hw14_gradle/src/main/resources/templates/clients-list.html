@@ -5,6 +5,13 @@
     <title>Список клиентов</title>
 </head>
 <body>
+<div th:if="${message}" style="color: #0f5132; background-color: #d1e7dd; border-color: #badbcc; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+    ✅ <strong>Успех:</strong> <span th:text="${message}"></span>
+</div>
+
+<div th:if="${error}" style="color: #842029; background-color: #f8d7da; border-color: #f5c2c7; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+    ❌ <strong>Ошибка:</strong> <span th:text="${error}"></span>
+</div>
 <h1>Клиенты</h1>
 
 <table border="1" cellpadding="8" cellspacing="0">
@@ -31,11 +38,11 @@
 
         <td>
             <span th:if="${#lists.isEmpty(client.phoneNumbers)}">—</span>
-            <span th:unless="${#lists.isEmpty(client.phoneNumbers)}" th:remove="tag">
-                <span th:each="number : ${client.phoneNumbers}"
-                      th:text="${number}"
-                      th:remove="tag"></span>
-            </span>
+            <div th:unless="${#lists.isEmpty(client.phoneNumbers)}" style="display: flex; flex-direction: column;">
+        <span th:each="number : ${client.phoneNumbers}"
+              th:text="${number}"
+              style="display: block; margin-bottom: 4px;"></span>
+            </div>
         </td>
 
         <!-- Действия: Редактировать + Удалить -->

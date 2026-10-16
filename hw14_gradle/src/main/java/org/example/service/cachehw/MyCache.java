@@ -5,59 +5,58 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.WeakHashMap;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 @Component
 public class MyCache<K, V> implements HwCache<K, V> {
     private static final Logger logger = LoggerFactory.getLogger(MyCache.class);
-
-    private final WeakHashMap<K, V> cache = new WeakHashMap<>();
-    private final List<HwListener<K, V>> listeners = new ArrayList<>();
-
-    @Override
-    public synchronized void put(K key, V value) {
-        cache.put(key, value);
-        notifyListeners(key, value, "put");
-    }
+    private final Map<K, V> cache = new ConcurrentHashMap<>();
+   private final List<HwListener<K, V>> listeners = new CopyOnWriteArrayList<>();
 
     @Override
-    public synchronized void remove(K key) {
-        V value = cache.remove(key);
-        notifyListeners(key, value, "remove");
-    }
-    @Override
-       public synchronized V get(K key) {
-        V value = cache.get(key);
-        if (value != null) {
-            notifyListeners(key, value, "get");
+    public void put(K key, V value) {
+        if (key == null || value == null) {
+            return;
         }
-        return value;
+        V oldValue = cache.put(key, value);
+       if (!Objects.equals(oldValue, value)) {
+            notifyListeners(key, value, "put");
+        }
     }
 
     @Override
-    public synchronized void addListener(HwListener<K, V> listener) {
+    public void remove(K key) {
+        V removed = cache.remove(key);
+        if (removed != null) {
+            notifyListeners(key, removed, "remove");
+        }
+    }
+
+    @Override
+    public V get(K key) {
+       return cache.get(key);
+    }
+
+    @Override
+    public void addListener(HwListener<K, V> listener) {
         if (listener != null && !listeners.contains(listener)) {
             listeners.add(listener);
         }
     }
 
     @Override
-    public synchronized void removeListener(HwListener<K, V> listener) {
+    public void removeListener(HwListener<K, V> listener) {
         listeners.remove(listener);
     }
 
     private void notifyListeners(K key, V value, String action) {
-        List<HwListener<K, V>> copy;
-        synchronized (this) {
-            copy = new ArrayList<>(listeners);
-        }
-
-        for (HwListener<K, V> listener : copy) {
+       for (HwListener<K, V> listener : listeners) {
             try {
                 listener.notify(key, value, action);
             } catch (Exception e) {
-                logger.error("Listener error", e);
+               logger.error("Listener error for key={}, action={}", key, action, e);
             }
         }
     }
