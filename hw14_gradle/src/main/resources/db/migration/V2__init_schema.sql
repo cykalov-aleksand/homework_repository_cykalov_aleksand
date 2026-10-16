@@ -1,0 +1,1 @@
+ALTER TABLE address ADD CONSTRAINT unique_client_address UNIQUE (client_id);

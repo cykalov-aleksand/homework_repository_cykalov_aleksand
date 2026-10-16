@@ -48,14 +48,16 @@
         <!-- Действия: Редактировать + Удалить -->
         <td>
             <!-- Кнопка редактирования -->
-            <a th:href="@{/clients/{id}/edit(id=${client.id})}" class="btn" style="margin-right: 5px;">Редактировать</a>
+            <a th:href="@{/{id}/edit(id=${client.id})}" class="btn btn-sm btn-primary">Редактировать</a>
 
             <!-- Форма удаления -->
             <form th:action="@{/clients/{id}/delete(id=${client.id})}"
-                  method="POST"
-                  onsubmit="return confirm('Вы уверены, что хотите удалить клиента ID ' + ${client.id} + '?');">
-                <button type="submit" class="btn btn-danger">Удалить</button>
+                  method="post"
+                  style="display:inline;"
+                  onsubmit="return confirm('Удалить клиента ID ' + ${client.id} + '?');">
+                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
             </form>
+
         </td>
     </tr>
     </tbody>

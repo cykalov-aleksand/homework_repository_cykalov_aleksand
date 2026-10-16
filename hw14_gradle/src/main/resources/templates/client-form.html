@@ -12,39 +12,44 @@
 <body>
 
 <!-- Блок для ошибок валидации -->
-<div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+    <span th:text="${errorMessage}"></span>
+</div>
+
+<div th:if="${successMessage}" class="alert alert-success" role="alert">
+    <span th:text="${successMessage}"></span>
+</div>
 
 <h1 th:text="${clientDto.id == null ? 'Новый клиент' : 'Редактирование клиента'}"></h1>
 
-<form th:object="${clientDto}" th:action="@{/clients}" method="post">
+<form th:action="@{/clients}" th:object="${clientDto}" method="post">
 
-    <!-- Скрытый ID для редактирования -->
-    <input type="hidden" th:field="*{id}" />
-
-    <div>
-        <label>Имя:
-            <input type="text" th:field="*{name}" placeholder="Например: Иван Иванов" required />
-        </label>
+    <!-- Блок ошибок (единый для всех случаев) -->
+    <div th:if="${errorMessage}" class="alert alert-danger">
+        <span th:text="${errorMessage}"></span>
     </div>
 
-    <div>
-        <label>Адрес (улица и дом):
-            <input type="text" th:field="*{addressStreet}" placeholder="Например: Москва, ул. Пушкина, 10" />
-        </label>
+    <div th:if="${message}" class="alert alert-success">
+        <span th:text="${message}"></span>
     </div>
 
-    <div>
-        <label>Телефоны (через запятую):</label>
-        <!-- ВАЖНО: не th:field, а name + th:value, потому что phoneNumbersStr нет в DTO -->
-        <input type="text"
-               name="phoneNumbersStr"
-               th:value="${phoneNumbersStr}"
-               placeholder="Например: +79991234567, +79997654321"/>
-    </div>
+    <!-- Поле имени -->
+    <label for="name">Имя:</label>
+    <!-- th:field автоматически берет значение из clientDto благодаря @SessionAttributes -->
+    <input type="text" th:field="*{name}" id="name" class="form-control" />
 
-    <button type="submit">Сохранить</button>
-    <a th:href="@{/clients}">Отмена</a>
+    <!-- Поле адреса -->
+    <label for="addressStreet">Адрес:</label>
+    <input type="text" th:field="*{addressStreet}" id="addressStreet" class="form-control" />
+
+    <!-- Поле телефонов (текстовое поле для ввода через запятую) -->
+    <label for="phoneNumbersStr">Телефоны (через запятую):</label>
+    <textarea name="phoneNumbersStr" id="phoneNumbersStr" rows="3" class="form-control" th:value="${phoneNumbersStr}">
+    </textarea>
+
+    <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
+
 
 </body>
 </html>
