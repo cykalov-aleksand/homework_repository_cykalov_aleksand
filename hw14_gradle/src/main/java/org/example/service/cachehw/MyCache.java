@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MyCache<K, V> implements HwCache<K, V> {
     private static final Logger logger = LoggerFactory.getLogger(MyCache.class);
     private final Map<K, V> cache = new ConcurrentHashMap<>();
-   private final List<HwListener<K, V>> listeners = new CopyOnWriteArrayList<>();
+    private final List<HwListener<K, V>> listeners = new CopyOnWriteArrayList<>();
 
     @Override
     public void put(K key, V value) {
@@ -21,7 +21,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
             return;
         }
         V oldValue = cache.put(key, value);
-       if (!Objects.equals(oldValue, value)) {
+        if (!Objects.equals(oldValue, value)) {
             notifyListeners(key, value, "put");
         }
     }
@@ -36,7 +36,7 @@ public class MyCache<K, V> implements HwCache<K, V> {
 
     @Override
     public V get(K key) {
-       return cache.get(key);
+        return cache.get(key);
     }
 
     @Override
@@ -52,11 +52,11 @@ public class MyCache<K, V> implements HwCache<K, V> {
     }
 
     private void notifyListeners(K key, V value, String action) {
-       for (HwListener<K, V> listener : listeners) {
+        for (HwListener<K, V> listener : listeners) {
             try {
                 listener.notify(key, value, action);
             } catch (Exception e) {
-               logger.error("Listener error for key={}, action={}", key, action, e);
+                logger.error("Listener error for key={}, action={}", key, action, e);
             }
         }
     }

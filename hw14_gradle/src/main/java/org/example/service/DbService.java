@@ -82,7 +82,7 @@ public class DbService implements DbServiceClient {
                 }
             }
         }
-              Address address = client.getAddressId() != null
+        Address address = client.getAddressId() != null
                 ? addressRepository.findById(client.getAddressId()).orElse(null)
                 : null;
         List<Phone> phones = phoneRepository.findAllByClientId(savedClientId);

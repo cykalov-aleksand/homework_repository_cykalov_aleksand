@@ -1,7 +1,6 @@
 package org.example.service.cachehw;
 
 
-
 public interface HwCache<K, V> {
 
     void put(K key, V value);

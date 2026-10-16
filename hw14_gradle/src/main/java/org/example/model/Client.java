@@ -8,6 +8,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Data
 @ToString
 @Table("client")
@@ -15,7 +16,7 @@ public class Client {
     @Id
     private Long id;
     private String name;
-   private Long addressId;
+    private Long addressId;
     @Transient
     private List<Phone> phones = new ArrayList<>();
     @Transient

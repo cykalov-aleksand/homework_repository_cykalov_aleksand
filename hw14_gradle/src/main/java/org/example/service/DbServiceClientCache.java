@@ -9,15 +9,15 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class DbServiceClientCache implements DbServiceClient{
-   private final DbService dbService;
-   private final MyCache<Long, ClientTableDto>cache;
+public class DbServiceClientCache implements DbServiceClient {
+    private final DbService dbService;
+    private final MyCache<Long, ClientTableDto> cache;
 
     @Override
     public ClientTableDto saveClient(ClientTableDto clientTableDto) {
-       ClientTableDto saved = dbService.saveClient(clientTableDto);
+        ClientTableDto saved = dbService.saveClient(clientTableDto);
         if (saved.getId() != null) {
-            cache.put(saved.getId(),saved);
+            cache.put(saved.getId(), saved);
         }
         return saved;
     }
@@ -47,6 +47,6 @@ public class DbServiceClientCache implements DbServiceClient{
     @Override
     public void deleteClient(Long id) {
         dbService.deleteClient(id);
-      cache.remove(id);
+        cache.remove(id);
     }
 }

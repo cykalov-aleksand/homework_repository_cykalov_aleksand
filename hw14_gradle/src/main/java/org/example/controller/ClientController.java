@@ -102,6 +102,6 @@ public class ClientController {
 
     @GetMapping("/delete/{id}")
     public String redirectToDelete(@PathVariable Long id) {
-       return "redirect:/clients";
+        return "redirect:/clients";
     }
 }

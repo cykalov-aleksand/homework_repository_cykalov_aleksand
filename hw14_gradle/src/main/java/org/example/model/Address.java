@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @ToString
 @Table(name = "address")
 public class Address {
-   @Id
+    @Id
     private Long id;
     private String street;
 }
