@@ -3,6 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Список клиентов</title>
+    <style>
+        table {
+        border-collapse: collapse;
+       width: 40%;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+}
+    </style>
 </head>
 <body>
 <div th:if="${message}" style="color: #0f5132; background-color: #d1e7dd; border-color: #badbcc; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
@@ -14,7 +25,7 @@
 </div>
 <h1>Клиенты</h1>
 
-<table border="1" cellpadding="8" cellspacing="0">
+<table>
     <thead>
     <tr>
         <th>ID</th>

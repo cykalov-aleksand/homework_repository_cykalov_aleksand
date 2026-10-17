@@ -53,7 +53,7 @@ public class ClientController {
             return "redirect:/clients/new";
         }
 
-        // Парсинг телефонов
+        // в html с телефонами работаем в виде строк, поэтому производим преобразование строки в список телефонов
         List<String> numbers = new ArrayList<>();
         if (phoneNumbersStr != null && !phoneNumbersStr.isBlank()) {
             for (String raw : phoneNumbersStr.split(",")) {
@@ -73,7 +73,6 @@ public class ClientController {
         } catch (DuplicateClientNameException e) {
             log.warn("Дубликат имени: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            // Если это был ре-директ после редактирования, вернём на форму редактирования
             String redirectPath = (dto.getId() != null)
                     ? "/clients/" + dto.getId() + "/edit"
                     : "/clients/new";
