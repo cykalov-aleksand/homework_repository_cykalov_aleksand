@@ -1,30 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<meta charset="UTF-8">
+<head>
+    <meta charset="UTF-8">
+    <title>Форма клиента</title>
+</head>
+<body>
 <form th:action="@{/clients}" method="post" th:object="${clientDto}">
-        <!-- Скрытое поле с ID клиента -->
+    <!-- Скрытые поля (для них label не нужен) -->
     <input type="hidden" th:field="*{id}" />
-
-    <!-- Скрытое поле с ID адреса (чтобы сервис знал, какой обновлять) -->
     <input type="hidden" th:field="*{addressId}" />
 
+    <!-- Поле имени -->
     <div>
-        <label>Имя:</label>
-        <input type="text" th:field="*{name}" placeholder="Введите имя" required />
+        <label for="name">Имя:</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Введите имя" required />
     </div>
 
+    <!-- Поле адреса -->
     <div>
-        <label>Адрес (улица):</label>
-        <!-- Теперь тут будет подставлена улица из существующего адреса -->
-        <input type="text" th:field="*{addressStreet}" placeholder="Улица" required />
+        <label for="addressStreet">Адрес (улица):</label>
+        <input type="text" id="addressStreet" th:field="*{addressStreet}" placeholder="Улица" required />
     </div>
 
+    <!-- Поле телефонов -->
     <div>
-        <label>Телефоны:</label>
-        <textarea th:field="*{phoneNumbersStr}" rows="3" cols="40"
+        <label for="phoneNumbersStr">Телефоны:</label>
+        <textarea id="phoneNumbersStr" th:field="*{phoneNumbersStr}" rows="3" cols="40"
                   placeholder="Например: +7999..., +7900..."></textarea>
     </div>
 
     <button type="submit">Сохранить</button>
     <a href="/clients">Отмена</a>
 </form>
+</body>
+</html>

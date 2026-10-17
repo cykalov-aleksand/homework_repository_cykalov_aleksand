@@ -35,9 +35,9 @@ public class DbService implements DbServiceClient {
         boolean isNew = client.getId() == null;
 
         if (isNew) {
-           client= newClientMethod(dto);
+            client = newClientMethod(dto);
         } else {
-            client=updateClientMethod(dto);
+            client = updateClientMethod(dto);
         }
         return clientMapper.toDto(
                 clientRepository.findById(client.getId())
@@ -92,7 +92,7 @@ public class DbService implements DbServiceClient {
     @Transactional
     public void deleteClient(Long id) {
         clientRepository.deleteById(id);
-         }
+    }
 
     private Client newClientMethod(ClientTableDto dto) {
         Client client = clientMapper.toEntity(dto);

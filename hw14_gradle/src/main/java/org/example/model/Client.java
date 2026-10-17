@@ -20,7 +20,7 @@ public class Client {
     private Long id;
     private String name;
 
-    @MappedCollection(idColumn = "client_id",keyColumn = "position")
+    @MappedCollection(idColumn = "client_id", keyColumn = "position")
     private List<Phone> phones = new ArrayList<>();
 
     @MappedCollection(idColumn = "client_id")

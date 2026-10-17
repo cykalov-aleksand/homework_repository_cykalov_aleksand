@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface AddressRepository extends CrudRepository<Address, Long> {
     Optional<Address> findByClientId(long clientId);
+
     List<Address> findAllByClientIdIn(List<Long> clientIds);
 }
 

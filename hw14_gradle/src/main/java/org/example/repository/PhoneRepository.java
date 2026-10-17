@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface PhoneRepository extends CrudRepository<Phone, Long> {
     void deleteByClientId(Long clientId);
+
     List<Phone> findAllByClientIdIn(List<Long> clientIds);
 }
