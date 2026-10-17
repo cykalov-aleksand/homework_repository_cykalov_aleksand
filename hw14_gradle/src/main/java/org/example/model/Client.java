@@ -3,9 +3,6 @@ package org.example.model;
 import lombok.Data;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import lombok.Data;
-import lombok.ToString;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
