@@ -26,112 +26,30 @@ public class DbService implements DbServiceClient {
     private final PhoneRepository phoneRepository;
     private final ClientMapper clientMapper;
 
-        @Transactional
+    @Transactional
     public ClientTableDto saveClient(ClientTableDto dto) {
         if (dto.getName() == null || dto.getName().isBlank()) {
-            throw new IllegalArgumentException("Имя клиента обязательно");
+            throw new DuplicateClientNameException("Имя клиента обязательно");
         }
-
-        String normalizedName = dto.getName().trim().toLowerCase();
-
         Client client = clientMapper.toEntity(dto);
         boolean isNew = client.getId() == null;
 
         if (isNew) {
-            // Проверка: есть ли клиент с таким (нормализованным) именем
-            Optional<Client> existingOpt = clientRepository.findByNameIgnoreCaseTrimmed(dto.getName());
-            if (existingOpt.isPresent()) {
-                throw new DuplicateClientNameException("Запись не произведена: клиент с именем '" + dto.getName() + "' уже существует");
-            }
-
-            // Сохраняем родителя, чтобы получить ID
-            client = clientRepository.save(client);
-            long clientId = client.getId();
-
-            // Если в DTO был адрес — сохраняем его отдельно, проставив clientId
-            if (client.getAddress() != null) {
-                Address address = client.getAddress();
-                address.setClientId(clientId);
-                addressRepository.save(address);
-            }
-
-            // Телефоны: формируем список и сохраняем массово
-            List<Phone> phones = new ArrayList<>();
-            int position = 0;
-            for (String number : dto.getPhoneNumbers()) {
-                if (number != null && !number.isBlank()) {
-                    Phone phone = new Phone();
-                    phone.setNumber(number);
-                    phone.setPosition(position++);
-                    phone.setClientId(clientId);
-                    phones.add(phone);
-                }
-            }
-            if (!phones.isEmpty()) {
-                phoneRepository.saveAll(phones);
-            }
+           client= newClientMethod(dto);
         } else {
-            // Обновление существующего клиента
-            long clientId = client.getId();
-            String oldName = client.getName();
-
-            client.setName(dto.getName());
-
-            // Если имя изменилось — проверяем, не занято ли новое имя кем-то другим
-            if (!oldName.trim().toLowerCase().equals(normalizedName)) {
-                Optional<Client> existingOpt = clientRepository.findByNameIgnoreCaseTrimmed(dto.getName());
-                if (existingOpt.isPresent() && !existingOpt.get().getId().equals(clientId)) {
-                    throw new RuntimeException("Запись не произведена: клиент с именем '" + dto.getName() + "' уже существует (другой клиент)");
-                }
-            }
-
-            clientRepository.save(client); // обновляем родителя
-
-            // Полная замена телефонов: удаляем старые, вставляем новые
-            phoneRepository.deleteByClientId(clientId);
-
-            List<Phone> phones = new ArrayList<>();
-            int position = 0;
-            for (String number : dto.getPhoneNumbers()) {
-                if (number != null && !number.isBlank()) {
-                    Phone phone = new Phone();
-                    phone.setNumber(number);
-                    phone.setPosition(position++);
-                    phone.setClientId(clientId);
-                    phones.add(phone);
-                }
-            }
-            if (!phones.isEmpty()) {
-                phoneRepository.saveAll(phones);
-            }
-
-            // Логика адреса (One-to-One)
-            Optional<Address> existingAddressOpt = addressRepository.findByClientId(clientId);
-            if (dto.getAddressStreet() == null || dto.getAddressStreet().isBlank()) {
-                existingAddressOpt.ifPresent(addressRepository::delete);
-            } else if (existingAddressOpt.isPresent()) {
-                Address existingAddress = existingAddressOpt.get();
-                existingAddress.setStreet(dto.getAddressStreet());
-                addressRepository.save(existingAddress);
-            } else {
-                Address newAddress = new Address();
-                newAddress.setStreet(dto.getAddressStreet());
-                newAddress.setClientId(clientId);
-                addressRepository.save(newAddress);
-            }
+            client=updateClientMethod(dto);
         }
-
-        // Возвращаем DTO по свежему состоянию клиента
         return clientMapper.toDto(
                 clientRepository.findById(client.getId())
-                        .orElseThrow(() -> new IllegalArgumentException("Client not found"))
+                        .orElseThrow(() -> new DuplicateClientNameException("Клиент не найден"))
         );
     }
+
     @Override
     @Transactional(readOnly = true)
     public ClientTableDto findById(Long id) {
         Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Client " + id + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Клиент с ID=" + id + " не найден"));
         return clientMapper.toDto(client);
     }
 
@@ -174,6 +92,94 @@ public class DbService implements DbServiceClient {
     @Transactional
     public void deleteClient(Long id) {
         clientRepository.deleteById(id);
-        // ON DELETE CASCADE в PostgreSQL удалит address и phone автоматически
+         }
+
+    private Client newClientMethod(ClientTableDto dto) {
+        Client client = clientMapper.toEntity(dto);
+        // Проверка: есть ли клиент с таким именем
+        Optional<Client> existingOpt = clientRepository.findByNameIgnoreCaseTrimmed(dto.getName());
+        if (existingOpt.isPresent()) {
+            throw new DuplicateClientNameException("Запись не произведена: клиент с именем '" + dto.getName() + "' уже существует");
+        }
+
+        // Сохраняем родителя, чтобы получить ID
+        client = clientRepository.save(client);
+        long clientId = client.getId();
+
+        // Если в DTO был адрес — сохраняем его отдельно, проставив clientId
+        if (client.getAddress() != null) {
+            Address address = client.getAddress();
+            address.setClientId(clientId);
+            addressRepository.save(address);
+        }
+        // Телефоны: формируем список и сохраняем массово
+        List<Phone> phones = new ArrayList<>();
+        int position = 0;
+        for (String number : dto.getPhoneNumbers()) {
+            if (number != null && !number.isBlank()) {
+                Phone phone = new Phone();
+                phone.setNumber(number);
+                phone.setPosition(position++);
+                phone.setClientId(clientId);
+                phones.add(phone);
+            }
+        }
+        if (!phones.isEmpty()) {
+            phoneRepository.saveAll(phones);
+        }
+        return client;
+    }
+
+    private Client updateClientMethod(ClientTableDto dto) {
+        Client client = clientMapper.toEntity(dto);
+        // Обновление существующего клиента
+        long clientId = client.getId();
+        String oldName = client.getName();
+
+        client.setName(dto.getName());
+
+        // Если имя изменилось — проверяем, не занято ли новое имя кем-то другим
+        if (!oldName.trim().equalsIgnoreCase(dto.getName().trim())) {
+            Optional<Client> existingOpt = clientRepository.findByNameIgnoreCaseTrimmed(dto.getName());
+            if (existingOpt.isPresent() && !existingOpt.get().getId().equals(clientId)) {
+                throw new RuntimeException("Запись не произведена: клиент с именем '" + dto.getName() + "' уже существует (другой клиент)");
+            }
+        }
+
+        clientRepository.save(client); // обновляем родителя
+
+        // Полная замена телефонов: удаляем старые, вставляем новые
+        phoneRepository.deleteByClientId(clientId);
+
+        List<Phone> phones = new ArrayList<>();
+        int position = 0;
+        for (String number : dto.getPhoneNumbers()) {
+            if (number != null && !number.isBlank()) {
+                Phone phone = new Phone();
+                phone.setNumber(number);
+                phone.setPosition(position++);
+                phone.setClientId(clientId);
+                phones.add(phone);
+            }
+        }
+        if (!phones.isEmpty()) {
+            phoneRepository.saveAll(phones);
+        }
+
+        // Логика адреса (One-to-One)
+        Optional<Address> existingAddressOpt = addressRepository.findByClientId(clientId);
+        if (dto.getAddressStreet() == null || dto.getAddressStreet().isBlank()) {
+            existingAddressOpt.ifPresent(addressRepository::delete);
+        } else if (existingAddressOpt.isPresent()) {
+            Address existingAddress = existingAddressOpt.get();
+            existingAddress.setStreet(dto.getAddressStreet());
+            addressRepository.save(existingAddress);
+        } else {
+            Address newAddress = new Address();
+            newAddress.setStreet(dto.getAddressStreet());
+            newAddress.setClientId(clientId);
+            addressRepository.save(newAddress);
+        }
+        return client;
     }
 }

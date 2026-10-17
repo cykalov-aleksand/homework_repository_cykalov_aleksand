@@ -20,11 +20,9 @@ public class Client {
     private Long id;
     private String name;
 
-    // Для списка телефонов — оставляем MappedCollection, но без keyColumn (чтобы не было дублей position)
     @MappedCollection(idColumn = "client_id",keyColumn = "position")
     private List<Phone> phones = new ArrayList<>();
 
-    // Для Address — просто поле, без аннотации MappedCollection
     @MappedCollection(idColumn = "client_id")
     private Address address;
 }

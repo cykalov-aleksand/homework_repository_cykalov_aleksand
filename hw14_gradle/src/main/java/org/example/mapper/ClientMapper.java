@@ -16,7 +16,6 @@ public class ClientMapper {
         if (dto == null) {
             return null;
         }
-
         Client client = new Client();
         client.setId(dto.getId());
         client.setName(dto.getName());
