@@ -19,7 +19,7 @@ public class DbServiceClientCache implements DbServiceClient {
         if (saved.getId() != null) {
             cache.put(saved.getId(), saved);
         }
-        return saved;
+        return cache.get(saved.getId());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DbServiceClientCache implements DbServiceClient {
             cache.put(id, fromDb);
         }
 
-        return fromDb;
+        return cache.get(id);
     }
 
     @Override
