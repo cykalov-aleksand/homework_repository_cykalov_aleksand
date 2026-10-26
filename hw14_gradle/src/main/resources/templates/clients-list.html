@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список клиентов</title>
+    <style>
+        table {
+        border-collapse: collapse;
+       width: 40%;
+}
+
+th, td {
+    border: 1px solid black;
+    padding: 8px;
+}
+    </style>
+</head>
+<body>
+<div th:if="${message}" style="color: #0f5132; background-color: #d1e7dd; border-color: #badbcc; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+    ✅ <strong>Успех:</strong> <span th:text="${message}"></span>
+</div>
+
+<div th:if="${error}" style="color: #842029; background-color: #f8d7da; border-color: #f5c2c7; padding: 10px; margin-bottom: 20px; border-radius: 4px;">
+    ❌ <strong>Ошибка:</strong> <span th:text="${error}"></span>
+</div>
+<h1>Клиенты</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Адрес</th>
+        <th>Телефоны</th>
+        <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Сообщение, если список пустой -->
+    <tr th:if="${#lists.isEmpty(clients)}">
+        <td colspan="6">Клиентов пока нет</td>
+    </tr>
+
+    <!-- Строки с клиентами -->
+    <tr th:each="client : ${clients}">
+        <td th:text="${client.id}"></td>
+        <td th:text="${client.name != null ? client.name : '—'}"></td>
+        <td th:text="${client.addressStreet != null ? client.addressStreet : '—'}"></td>
+
+        <td>
+            <span th:if="${#lists.isEmpty(client.phoneNumbers)}">—</span>
+            <div th:unless="${#lists.isEmpty(client.phoneNumbers)}" style="display: flex; flex-direction: column;">
+        <span th:each="number : ${client.phoneNumbers}"
+              th:text="${number}"
+              style="display: block; margin-bottom: 4px;"></span>
+            </div>
+        </td>
+
+        <!-- Действия: Редактировать + Удалить -->
+        <td>
+            <!-- Кнопка редактирования -->
+            <a th:href="@{/{id}/edit(id=${client.id})}" class="btn btn-sm btn-primary">Редактировать</a>
+
+            <!-- Форма удаления -->
+            <form th:action="@{/clients/{id}/delete(id=${client.id})}"
+                  method="post"
+                  style="display:inline;"
+                  onsubmit="return confirm('Удалить клиента ID ' + ${client.id} + '?');">
+                <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+            </form>
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Ссылка на создание нового (для полноты картины) -->
+<p><a th:href="@{/clients/new}" class="btn btn-primary">Добавить клиента</a></p>
+</body>
+</html>
