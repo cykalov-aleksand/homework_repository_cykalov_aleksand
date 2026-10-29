@@ -5,16 +5,12 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final int LIMIT = 10; // вершина счёта
+    private static final int LIMIT = 10;
     private static final int TOTAL_CYCLES = 2;
 
     private final Object lock = new Object();
-
-    // ОБЩЕЕ СОСТОЯНИЕ
-    private boolean turnIsFirst = true; // чья очередь
-    private int cyclesDone = 0;          // сколько полных циклов (1->10->1) сделано
-    private int step = 1;                // текущее число
-    private boolean ascending = true;    // текущее направление счёта
+    private boolean turnIsFirst = true;
+    private volatile boolean finished = false; // общий флаг завершения
 
     public static void main(String[] args) throws InterruptedException {
         var counter = new Main();
@@ -24,9 +20,7 @@ public class Main {
     private void go() throws InterruptedException {
         synchronized (lock) {
             turnIsFirst = true;
-            cyclesDone = 0;
-            step = 1;
-            ascending = true;
+            finished = false;
         }
 
         Runnable r1 = () -> runSequence("Поток 1", true);
@@ -43,18 +37,21 @@ public class Main {
 
         logger.info("Все потоки завершены. Программа завершается.");
     }
+
     private void runSequence(String name, boolean iAmFirst) {
+        int step = 1;
+        boolean ascending = true;
+        int cyclesDone = 0;
+
         while (true) {
             synchronized (lock) {
-                if (cyclesDone >= TOTAL_CYCLES) {
-                    lock.notifyAll(); // будим всех, для выхода
-                    logger.info("[{}] {}: ЗАВЕРШЕНИЕ РАБОТЫ (циклы={})",
-                            Thread.currentThread().getName(), name, cyclesDone);
+                // если уже завершили — сразу выходим
+                if (finished) {
                     return;
                 }
 
-                // Ждём своей очереди только если задача ещё не завершена
-                while (turnIsFirst != iAmFirst) {
+                // Ждём своей очереди
+                while (turnIsFirst != iAmFirst && !finished) {
                     try {
                         lock.wait();
                     } catch (InterruptedException e) {
@@ -63,7 +60,11 @@ public class Main {
                     }
                 }
 
-                // Печатаем текущее значение
+                // Повторная проверка после wait
+                if (finished) {
+                    return;
+                }
+
                 logger.info("[{}] {}: {}", Thread.currentThread().getName(), name, step);
 
                 // Обновляем состояние
@@ -75,11 +76,20 @@ public class Main {
                     if (step == 1) {
                         ascending = true;
                         cyclesDone++;
+
+                        // ПРОВЕРКА ЗАВЕРШЕНИЯ СРАЗУ ПОСЛЕ УВЕЛИЧЕНИЯ cyclesDone
+                        if (cyclesDone >= TOTAL_CYCLES) {
+                            finished = true;      // ставим общий флаг
+                            lock.notifyAll();     // будим ВСЕХ, чтобы они увидели finished=true
+                            logger.info("[{}] {}: ЗАВЕРШЕНИЕ РАБОТЫ (циклы={})",
+                                    Thread.currentThread().getName(), name, cyclesDone);
+                            return;               // выходим из этого потока
+                        }
                     }
                 }
                 step = ascending ? step + 1 : step - 1;
 
-                // Передаём ход
+                // Передаём ход другому потоку
                 turnIsFirst = !turnIsFirst;
                 lock.notify();
             }
