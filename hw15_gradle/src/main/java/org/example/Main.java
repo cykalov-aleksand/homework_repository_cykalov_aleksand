@@ -5,12 +5,11 @@ import org.slf4j.LoggerFactory;
 
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final int LIMIT = 10;
-    private static final int TOTAL_CYCLES = 2;
-
     private final Object lock = new Object();
+    private int totalSteps = 0;
+    private static final int MAX_STEPS = 40;
+    // true = сейчас ход у Потока-1, false = у Потока-2
     private boolean turnIsFirst = true;
-    private volatile boolean finished = false; // общий флаг завершения
 
     public static void main(String[] args) throws InterruptedException {
         var counter = new Main();
@@ -18,13 +17,11 @@ public class Main {
     }
 
     private void go() throws InterruptedException {
-        synchronized (lock) {
-            turnIsFirst = true;
-            finished = false;
-        }
+        ExecutableObject object1 = new ExecutableObject();
+        ExecutableObject object2 = new ExecutableObject();
 
-        Runnable r1 = () -> runSequence("Поток 1", true);
-        Runnable r2 = () -> runSequence("Поток 2", false);
+        Runnable r1 = () -> runSequence(object1, true);
+        Runnable r2 = () -> runSequence(object2, false);
 
         var t1 = new Thread(r1, "Поток-1");
         var t2 = new Thread(r2, "Поток-2");
@@ -38,60 +35,35 @@ public class Main {
         logger.info("Все потоки завершены. Программа завершается.");
     }
 
-    private void runSequence(String name, boolean iAmFirst) {
-        int step = 1;
-        boolean ascending = true;
-        int cyclesDone = 0;
-
+    private void runSequence(ExecutableObject obj, boolean iAmFirst) {
         while (true) {
             synchronized (lock) {
-                // если уже завершили — сразу выходим
-                if (finished) {
+                // Если лимит уже достигнут — сразу выходим, но сначала будим остальных
+                if (totalSteps >= MAX_STEPS) {
+                    lock.notifyAll(); // разбудить всех, кто может быть в wait()
                     return;
                 }
-
-                // Ждём своей очереди
-                while (turnIsFirst != iAmFirst && !finished) {
+                while ((iAmFirst && !turnIsFirst) || (!iAmFirst && turnIsFirst)) {
                     try {
                         lock.wait();
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
+                        lock.notifyAll(); // на случай, если другой поток всё ещё ждёт
                         return;
                     }
                 }
 
-                // Повторная проверка после wait
-                if (finished) {
+                // Ещё раз проверяем лимит уже после того, как получили право на ход
+                if (totalSteps >= MAX_STEPS) {
+                    lock.notifyAll();
                     return;
                 }
 
-                logger.info("[{}] {}: {}", Thread.currentThread().getName(), name, step);
-
-                // Обновляем состояние
-                if (ascending) {
-                    if (step == LIMIT) {
-                        ascending = false;
-                    }
-                } else {
-                    if (step == 1) {
-                        ascending = true;
-                        cyclesDone++;
-
-                        // ПРОВЕРКА ЗАВЕРШЕНИЯ СРАЗУ ПОСЛЕ УВЕЛИЧЕНИЯ cyclesDone
-                        if (cyclesDone >= TOTAL_CYCLES) {
-                            finished = true;      // ставим общий флаг
-                            lock.notifyAll();     // будим ВСЕХ, чтобы они увидели finished=true
-                            logger.info("[{}] {}: ЗАВЕРШЕНИЕ РАБОТЫ (циклы={})",
-                                    Thread.currentThread().getName(), name, cyclesDone);
-                            return;               // выходим из этого потока
-                        }
-                    }
-                }
-                step = ascending ? step + 1 : step - 1;
-
-                // Передаём ход другому потоку
+                int result = obj.result();
+                logger.info("[{}] : {}", Thread.currentThread().getName(), result);
+                totalSteps++;
                 turnIsFirst = !turnIsFirst;
-                lock.notify();
+                lock.notifyAll();
             }
         }
     }
