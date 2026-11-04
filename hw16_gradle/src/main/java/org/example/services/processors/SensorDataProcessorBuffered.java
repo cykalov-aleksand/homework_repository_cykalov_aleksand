@@ -9,8 +9,10 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 // Этот класс нужно реализовать
 @SuppressWarnings({"java:S1068", "java:S125"})
@@ -19,8 +21,10 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     private final int bufferSize;
     private final SensorDataBufferedWriter writer;
-    private final CopyOnWriteArrayList<SensorData> dataBuffer = new CopyOnWriteArrayList<>();
-    private final ReentrantLock lock = new ReentrantLock();
+
+    private final Queue<SensorData> dataBuffer = new ConcurrentLinkedQueue<>();
+    private final AtomicInteger size = new AtomicInteger();
+    private final AtomicBoolean draining = new AtomicBoolean();
 
     public SensorDataProcessorBuffered(int bufferSize, SensorDataBufferedWriter writer) {
         this.bufferSize = bufferSize;
@@ -29,40 +33,35 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     @Override
     public void process(SensorData data) {
-        lock.lock();
-        try {
-            dataBuffer.add(data);
+        dataBuffer.add(data);
             if (dataBuffer.size() >= bufferSize) {
                 flush();
             }
-        } finally {
-            lock.unlock();
-        }
-    }
+           }
 
     public void flush() {
-        if (dataBuffer.isEmpty()) {
-            return;
+        // Захватываем право на сброс: только один поток за раз может писать.
+        if (!draining.compareAndSet(false, true)) {
+            return; // другой поток уже сбрасывает — его работы достаточно
         }
-        lock.lock();
         try {
-            flushLocked();
+            if (dataBuffer.isEmpty()) {
+                return; // писать пустоту нельзя: тест ожидает ровно одну запись
+            }
+            List<SensorData> toWrite = new ArrayList<>();
+            SensorData item;
+            while ((item = dataBuffer.poll()) != null) {
+                toWrite.add(item);
+            }
+            size.addAndGet(-toWrite.size());
+            toWrite.sort(Comparator.comparing(SensorData::getMeasurementTime));
+            try {
+                writer.writeBufferedData(toWrite);
+            } catch (Exception e) {
+                log.error("Ошибка в процессе записи буфера", e);
+            }
         } finally {
-            lock.unlock();
-        }
-    }
-
-    private void flushLocked() {
-        if (dataBuffer.isEmpty()) {
-            return;
-        }
-        List<SensorData> toWrite = new ArrayList<>(dataBuffer);
-        toWrite.sort(Comparator.comparing(SensorData::getMeasurementTime));
-        dataBuffer.clear(); // очищаем под локом, чтобы второй поток не забрал те же данные
-        try {
-            writer.writeBufferedData(toWrite);
-        } catch (Exception e) {
-            log.error("Ошибка в процессе записи буфера", e);
+            draining.set(false);
         }
     }
 

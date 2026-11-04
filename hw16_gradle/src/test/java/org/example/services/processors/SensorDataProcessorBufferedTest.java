@@ -98,7 +98,7 @@ class SensorDataProcessorBufferedTest {
     }
 //должен корректно сбрасывать данные из множества потоков
     @RepeatedTest(100)
-    //@Disabled("Удалить до начала тестирования")
+  //  @Disabled("Удалить до начала тестирования")
     void shouldCorrectFlushDataFromManyThreads() {
         List<SensorData> sensorDataList = getSensorDataForTest(BUFFER_SIZE - 1);
         sensorDataList.forEach(sensorData -> processor.process(sensorData));
@@ -127,7 +127,7 @@ class SensorDataProcessorBufferedTest {
     }
 //должны ли потоки корректной очистки данных и записи
     @RepeatedTest(1_000)
-    //@Disabled("Удалить до начала тестирования")
+    // @Disabled("Удалить до начала тестирования")
     void shouldCorrectFlushDataAndWriteThreads() throws InterruptedException {
         List<SensorData> sensorDataList = getSensorDataForTest(BUFFER_SIZE - 1);
 
