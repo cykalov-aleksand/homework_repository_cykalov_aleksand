@@ -81,6 +81,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     @Override
     public void onProcessingEnd() {
+        // По завершении обработки сбрасываем всё, что осталось в буфере.
         flush();
     }
 }
