@@ -3,7 +3,6 @@ package org.example.services.processors;
 import org.example.api.model.SensorData;
 import org.example.lib.SensorDataBufferedWriter;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -33,40 +33,54 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     @Override
     public void process(SensorData data) {
+        //заносим данные в очередь
         dataBuffer.add(data);
-            if (dataBuffer.size() >= bufferSize) {
+        // Атомарно увеличиваем счётчик и проверяем порог:
+        // если буфер заполнился — запускаем сброс.
+            if (size.incrementAndGet() >= bufferSize) {
                 flush();
             }
            }
 
     public void flush() {
-        // Захватываем право на сброс: только один поток за раз может писать.
+        // проверяем если атомарная переменная находится в значение false меняем ее на true
+        // и если другой поток успел уже изменить значение на true метод вернёт false
+
         if (!draining.compareAndSet(false, true)) {
-            return; // другой поток уже сбрасывает — его работы достаточно
+            return;
         }
         try {
+            //проверяем наличие информации в очереди, если очередь пуста выходим из метода
             if (dataBuffer.isEmpty()) {
                 return; // писать пустоту нельзя: тест ожидает ровно одну запись
             }
+            // Под CAS-флагом очередь дренажит только этот поток,
+            // поэтому для переноса достаточно обычного ArrayList.
             List<SensorData> toWrite = new ArrayList<>();
             SensorData item;
+            // Атомарно вынимаем элементы по одному (poll), пока очередь не опустеет,
+            // и переносим их в список
             while ((item = dataBuffer.poll()) != null) {
                 toWrite.add(item);
             }
+            // Уменьшаем счётчик на число фактически сброшенных элементов.
             size.addAndGet(-toWrite.size());
+            //организуем сортировку полученного списка по времени
             toWrite.sort(Comparator.comparing(SensorData::getMeasurementTime));
             try {
                 writer.writeBufferedData(toWrite);
             } catch (Exception e) {
                 log.error("Ошибка в процессе записи буфера", e);
             }
-        } finally {
+            //независимо от того возникло ли исключение или нет, устанавливаем атомарной переменной draining значение false
+           } finally {
             draining.set(false);
         }
     }
 
     @Override
     public void onProcessingEnd() {
+        // По завершении обработки сбрасываем всё, что осталось в буфере.
         flush();
     }
 }
