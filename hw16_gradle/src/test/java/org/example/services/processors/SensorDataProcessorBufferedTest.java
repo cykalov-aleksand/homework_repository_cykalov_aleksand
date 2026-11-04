@@ -45,9 +45,9 @@ class SensorDataProcessorBufferedTest {
     void setUp() {
         processor = spy(new SensorDataProcessorBuffered(BUFFER_SIZE, writer));
     }
-
+//Должен ли Exec выполнять сброс при переполнении буфера
     @Test
-    @Disabled("Удалить до начала тестирования")
+ //   @Disabled("Удалить до начала тестирования")
     void shouldExecFlushWhenBufferOverFlow() {
         List<SensorData> sensorDataList = getSensorDataForTest(BUFFER_SIZE + BUFFER_SIZE / 2);
 
@@ -57,13 +57,13 @@ class SensorDataProcessorBufferedTest {
 
         verify(processor, times(1)).flush();
         verify(writer).writeBufferedData(captor.capture());
-        var flushedData = captor.getValue();
+      var flushedData = captor.getValue();
 
-        assertThat(flushedData).hasSize(BUFFER_SIZE);
+    assertThat(flushedData).hasSize(BUFFER_SIZE);
     }
-
+//следует ли очищать буфер данных, отсортированных по времени
     @Test
-    @Disabled("Удалить до начала тестирования")
+    //@Disabled("Удалить до начала тестирования")
     void shouldFlushBufferDataSortedByTime() {
         var sensorDataList = new ArrayList<>(getSensorDataForTest(BUFFER_SIZE - 1));
         var originalSensorDataList = List.copyOf(sensorDataList);
@@ -72,16 +72,16 @@ class SensorDataProcessorBufferedTest {
         sensorDataList.forEach(sensorData -> processor.process(sensorData));
         verify(processor, never()).flush();
 
-        processor.flush();
+       processor.flush();
 
-        verify(writer).writeBufferedData(captor.capture());
+       verify(writer).writeBufferedData(captor.capture());
         var flushedData = captor.getValue();
 
-        assertThat(flushedData).containsExactlyElementsOf(originalSensorDataList);
+       assertThat(flushedData).containsExactlyElementsOf(originalSensorDataList);
     }
-
+//следует ли сбрасывать оставшиеся данные буфера при срабатывании обработки
     @Test
-    @Disabled("Удалить до начала тестирования")
+  //  @Disabled("Удалить до начала тестирования")
     void shouldFlushTheRestOfTheBufferDataWhenOnProcessingEndFired() {
         List<SensorData> sensorDataList = getSensorDataForTest(BUFFER_SIZE + BUFFER_SIZE / 2);
         sensorDataList.forEach(sensorData -> processor.process(sensorData));
@@ -96,9 +96,9 @@ class SensorDataProcessorBufferedTest {
 
         assertThat(flushedData).hasSize(BUFFER_SIZE / 2);
     }
-
+//должен корректно сбрасывать данные из множества потоков
     @RepeatedTest(100)
-    @Disabled("Удалить до начала тестирования")
+    //@Disabled("Удалить до начала тестирования")
     void shouldCorrectFlushDataFromManyThreads() {
         List<SensorData> sensorDataList = getSensorDataForTest(BUFFER_SIZE - 1);
         sensorDataList.forEach(sensorData -> processor.process(sensorData));
@@ -125,9 +125,9 @@ class SensorDataProcessorBufferedTest {
 
         assertThat(flushedData).hasSize(1);
     }
-
+//должны ли потоки корректной очистки данных и записи
     @RepeatedTest(1_000)
-    @Disabled("Удалить до начала тестирования")
+    //@Disabled("Удалить до начала тестирования")
     void shouldCorrectFlushDataAndWriteThreads() throws InterruptedException {
         List<SensorData> sensorDataList = getSensorDataForTest(BUFFER_SIZE - 1);
 
