@@ -37,10 +37,10 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
         dataBuffer.add(data);
         // Атомарно увеличиваем счётчик и проверяем порог:
         // если буфер заполнился — запускаем сброс.
-            if (size.incrementAndGet() >= bufferSize) {
-                flush();
-            }
-           }
+        if (size.incrementAndGet() >= bufferSize) {
+            flush();
+        }
+    }
 
     public void flush() {
         // проверяем если атомарная переменная находится в значение false меняем ее на true
@@ -73,7 +73,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
                 log.error("Ошибка в процессе записи буфера", e);
             }
             //независимо от того возникло ли исключение или нет, устанавливаем атомарной переменной draining значение false
-           } finally {
+        } finally {
             draining.set(false);
         }
     }
