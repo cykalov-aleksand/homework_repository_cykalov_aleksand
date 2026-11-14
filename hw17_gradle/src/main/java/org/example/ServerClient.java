@@ -20,7 +20,7 @@ public class ServerClient {
                 .build();
 
         server.start();
-        logger.info("Server started on port {}", PORT.getNumber());
+        logger.info("Сервер запущен на порту {}", PORT.getNumber());
 
         // Корректное завершение при Ctrl+C
         Runtime.getRuntime().addShutdownHook(new Thread(server::shutdown));
