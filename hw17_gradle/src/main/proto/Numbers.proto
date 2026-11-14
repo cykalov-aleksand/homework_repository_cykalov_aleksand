@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package org.example.protobuf;
+option java_multiple_files = true;
+option java_package = "org.example.grpc";
+
+// Запрос клиента: диапазон чисел
+message FirstLastRequest {
+  int64 firstValue = 1;
+  int64 lastValue = 2;
+}
+
+// Ответ сервера: одно число в потоке
+message NumberMessage {
+  int64 value = 1;
+}
+
+service NumberService {
+  // Сервер стримит числа от firstValue+1 до lastValue
+  rpc getNumbers(FirstLastRequest) returns (stream NumberMessage);
+}
