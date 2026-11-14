@@ -69,9 +69,9 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
         //заносим данные и производим сортировку по времени изменения
         toWrite.sort(Comparator.comparing(SensorData::getMeasurementTime));
         // Очищаем буфер, пока держим лок, — чтобы второй поток не забрал те же данные
-        dataBuffer.clear();
         try {
-            // Записываем пачку данных через writer
+            dataBuffer.clear();
+         // Записываем пачку данных через writer
             writer.writeBufferedData(toWrite);
         } catch (Exception e) {
             log.error("Ошибка в процессе записи буфера", e);
